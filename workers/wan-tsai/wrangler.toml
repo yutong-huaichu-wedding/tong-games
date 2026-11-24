@@ -1,0 +1,9 @@
+name = "wan-tsai-time-travel"
+main = "worker.js"
+compatibility_date = "2026-11-24"
+account_id = "57fb23076544a3be231ee74c0d1df0f9"
+workers_dev = true
+
+# 填 GitHub Pages 的 origin，逗號分隔。例：https://<github-user>.github.io
+[vars]
+CORS_ORIGINS = "http://127.0.0.1:8765,http://localhost:8765"

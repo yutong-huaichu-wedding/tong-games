@@ -1,0 +1,48 @@
+# 把靜態網站發佈到 GitHub Pages。不會部署 workers/（那是 Cloudflare）。
+# 在 GitHub 倉庫 Settings → Pages → Source 選「GitHub Actions」。
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble static site
+        run: |
+          mkdir -p _site
+          # 不把 Worker 原始碼、git、壓縮包放進公開網站目錄
+          rsync -a --delete \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '_site/' \
+            --exclude 'workers/' \
+            --exclude 'node_modules/' \
+            --exclude '.wrangler/' \
+            --exclude '.dev.vars' \
+            --exclude '*.zip' \
+            --exclude '.gitignore' \
+            ./ _site/
+          touch _site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

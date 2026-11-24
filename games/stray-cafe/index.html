@@ -1,0 +1,2584 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>浪浪咖啡館</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --foam:#F4ECDD; --cream:#FBF6EC; --espresso:#2B1B12; --caramel:#C68A3E;
+    --sage:#5E7C6E; --berry:#C45D6A; --green:#9FD9B8; --gold:#ffd9a3;
+    --wall:#EBDCC0; --wood:#B9834F;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{margin:0;color:var(--foam);font-family:"Noto Sans TC",system-ui,sans-serif;
+    display:flex;justify-content:center;min-height:100dvh;padding:12px;user-select:none;-webkit-user-select:none;
+    background:
+      radial-gradient(rgba(255,231,196,.03) 1.3px, transparent 1.8px) 0 0/26px 26px,
+      radial-gradient(circle at 18% 12%, rgba(198,138,62,.14), transparent 42%),
+      radial-gradient(circle at 85% 85%, rgba(94,124,110,.12), transparent 45%),
+      radial-gradient(120% 120% at 50% 0%,#3a2a1f 0%,#241710 60%,#19100a 100%)}
+  .wrap{width:100%;max-width:500px}
+  h1{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:26px;margin:6px 0 2px;letter-spacing:.5px}
+  .sub{color:#cdb79a;font-size:13px;margin-bottom:12px}
+  .panel{background:linear-gradient(180deg,#38281c,#291c14);border:1px solid #4f3928;
+    border-radius:24px;padding:16px;box-shadow:0 16px 44px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,230,190,.08);
+    position:relative}
+  .panel::before{content:"";position:absolute;inset:0;border-radius:24px;pointer-events:none;
+    background:repeating-linear-gradient(115deg, rgba(255,235,205,.018) 0 2px, transparent 2px 5px)}
+  .btn{display:block;width:100%;border:none;border-radius:16px;padding:15px;font-family:"Baloo 2","Noto Sans TC",sans-serif;
+    font-weight:800;font-size:18px;cursor:pointer;transition:.12s;letter-spacing:.5px;color:#2a1a10;position:relative;overflow:hidden}
+  .btn::after{content:"";position:absolute;left:8%;right:8%;top:4px;height:7px;border-radius:6px;
+    background:rgba(255,255,255,.35);pointer-events:none}
+  .btn.ghost::after,.btn.mini.ghost::after{background:rgba(255,255,255,.06)}
+  .btn:active{transform:translateY(2px)}
+  .btn.drop{background:linear-gradient(180deg,#eebb61,#C68A3E);box-shadow:0 7px 0 #9c6b29}
+  .btn.drop:active{box-shadow:0 3px 0 #9c6b29}
+  .btn.go{background:linear-gradient(180deg,#74957f,#5E7C6E);color:#fff;box-shadow:0 7px 0 #445a50}
+  .btn.go:active{box-shadow:0 3px 0 #445a50}
+  .btn.pink{background:linear-gradient(180deg,#e58a97,#C45D6A);color:#fff;box-shadow:0 7px 0 #93424d}
+  .btn.pink:active{box-shadow:0 3px 0 #93424d}
+  .btn.ghost{background:#3a2a1e;color:#e9d9c0;border:1.5px solid #5a4130;box-shadow:none;font-size:16px;padding:13px}
+  .btn.mini{padding:10px;font-size:15px;border-radius:13px}
+  .btn:disabled{opacity:.45;pointer-events:none}
+  .hidden{display:none!important}
+  .row{display:flex;gap:8px}
+  .row>.btn{flex:1}
+
+  /* ---- 頂部狀態列 ---- */
+  .hud{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .pill{background:#33241a;border:1px solid #4a3526;border-radius:999px;padding:7px 13px;
+    font-family:"Baloo 2","Noto Sans TC",sans-serif;font-weight:700;font-size:14px;color:#ffe6c2;display:flex;align-items:center;gap:5px;
+    box-shadow:inset 0 1px 0 rgba(255,230,190,.08)}
+  .pill.money{color:#ffd9a3}
+  .pill.rep{color:#f2b9c0}
+
+  /* ---- 標題畫面 ---- */
+  #scr-title{text-align:center;padding-top:4vh}
+  #titleArt{width:min(320px,80%);margin:0 auto;display:block;filter:drop-shadow(0 14px 26px rgba(0,0,0,.5))}
+  #scr-title h1{font-size:36px;margin:14px 0 4px;
+    background:linear-gradient(180deg,#ffe6c2,#e2a95f);-webkit-background-clip:text;background-clip:text;color:transparent}
+  #scr-title .sub{margin-bottom:24px}
+  #scr-title .btn{max-width:280px;margin:0 auto 12px}
+  @keyframes steamUp{0%{transform:translateY(0) scaleX(1);opacity:0}20%{opacity:.8}
+    100%{transform:translateY(-26px) scaleX(1.5);opacity:0}}
+  .steam{animation:steamUp 2.6s ease-out infinite}
+  .steam.s2{animation-delay:.9s}.steam.s3{animation-delay:1.7s}
+  .tw{animation:twinkle 2.6s ease-in-out infinite}
+  .tw.t2{animation-delay:.8s}.tw.t3{animation-delay:1.6s}
+  @keyframes twinkle{0%,100%{opacity:1}50%{opacity:.2}}
+  .glowWin{animation:winPulse 3.2s ease-in-out infinite}
+  .glowWin.g2{animation-delay:1.4s}
+  @keyframes winPulse{0%,100%{opacity:1}50%{opacity:.72}}
+
+  /* ---- 早晨準備 ---- */
+  .beanshelf{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0 14px}
+  .beancard{background:linear-gradient(180deg,#43301f,#382818);border:1.5px solid #5a4130;border-radius:14px;
+    padding:9px 4px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,230,190,.07)}
+  .beancard .bi{font-size:22px;line-height:1.2}
+  .beancard .bn{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:12.5px;color:#ffe6c2;margin-top:2px}
+  .beancard .bq{font-size:11.5px;color:#cdb79a;margin-top:2px}
+  .beancard .bql{font-size:10.5px;margin-top:1px;color:#9fd9b8}
+  .beancard.empty .bq{color:#d97f8b}
+  .menu-actions .btn{margin-bottom:9px}
+  .greet{font-size:14px;color:#e9d9c0;line-height:1.6;margin-bottom:4px}
+  .petstrip{display:flex;gap:6px;margin:2px 0 8px;min-height:26px;font-size:20px}
+  .petstrip span{filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+
+  /* ---- 商店 / 夥伴頁 ---- */
+  .pagehead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .pagehead h2{font-family:"Baloo 2","Noto Sans TC";font-weight:800;font-size:20px;margin:0;color:#ffe6c2}
+  .back{background:#3a2a1e;border:1.5px solid #5a4130;color:#e9d9c0;border-radius:12px;padding:8px 14px;
+    font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:14px;cursor:pointer}
+  .shopitem{display:flex;align-items:center;gap:11px;background:linear-gradient(180deg,#43301f,#382818);
+    border:1.5px solid #5a4130;border-radius:16px;padding:12px;margin-bottom:9px}
+  .shopitem .ic{font-size:28px;width:38px;text-align:center}
+  .shopitem .info{flex:1;min-width:0}
+  .shopitem .nm{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:15px;color:#ffe6c2}
+  .shopitem .ds{font-size:12px;color:#cdb79a;margin-top:2px}
+  .shopitem .lv{font-size:11px;color:#9fd9b8;margin-top:2px;letter-spacing:2px}
+  .buy{border:none;border-radius:12px;padding:10px 12px;font-family:"Baloo 2","Noto Sans TC";font-weight:800;font-size:14px;
+    background:linear-gradient(180deg,#eebb61,#C68A3E);color:#2a1a10;cursor:pointer;box-shadow:0 4px 0 #9c6b29;white-space:nowrap}
+  .buy:active{transform:translateY(2px);box-shadow:0 2px 0 #9c6b29}
+  .buy:disabled{opacity:.4;pointer-events:none}
+  .buy.maxed{background:#4a3526;color:#9c8368;box-shadow:none}
+  .petcard{display:flex;align-items:center;gap:12px;background:linear-gradient(180deg,#43301f,#382818);
+    border:1.5px solid #5a4130;border-radius:16px;padding:12px;margin-bottom:9px}
+  .petcard .pe{font-size:34px}
+  .petcard .pn{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:15px;color:#ffe6c2}
+  .petcard .pd{font-size:12px;color:#cdb79a;margin-top:2px;line-height:1.5}
+  .petcard .hearts{font-size:13px;margin-top:3px;letter-spacing:1px}
+  .petcard.unknown{opacity:.55}
+  .sect{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:14px;color:#cdb79a;margin:14px 0 8px}
+
+  /* ---- 營業中：咖啡館場景 ---- */
+  #scr-cafe .panel{padding:12px}
+  .timebar{height:12px;background:#1d1209;border-radius:8px;overflow:hidden;margin-bottom:8px;border:1px solid #4a3526}
+  .timebar i{display:block;height:100%;background:linear-gradient(90deg,#9FD9B8,#C68A3E);width:100%;transition:width .1s linear;border-radius:8px}
+  .cafehud{display:flex;justify-content:space-between;font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:14px;color:#ffe6c2;margin-bottom:8px}
+  .room{position:relative;width:100%;aspect-ratio:500/340;border-radius:16px;overflow:hidden;
+    box-shadow:inset 0 0 0 3px rgba(58,42,30,.9)}
+  .room::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;border-radius:16px;
+    box-shadow:inset 0 -30px 44px rgba(20,10,5,.32), inset 0 16px 28px rgba(20,10,5,.16)}
+  #ambient{position:absolute;inset:0;pointer-events:none;z-index:3;transition:background .8s linear}
+  .room svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .seat{position:absolute;width:17%;height:26%;transform:translate(-50%,-72%);text-align:center;cursor:pointer;z-index:5}
+  .cust{position:absolute;width:10.5%;aspect-ratio:34/52;transform:translate(-50%,-100%);z-index:5;cursor:pointer;
+    transition:left 1.15s ease-in-out, top 1.15s ease-in-out, opacity .3s}
+  .cust.fast{transition:left .75s ease-in, top .75s ease-in, opacity .3s}
+  .cust.leave2{opacity:0}
+  .person{position:absolute;inset:0;filter:drop-shadow(0 3px 3px rgba(30,15,5,.35))}
+  .person svg{width:100%;height:100%;display:block;overflow:visible}
+  .person .armL,.person .armR,.person .legL,.person .legR{transform-box:fill-box;transform-origin:50% 10%}
+  .cust.walkin .bodyG{animation:bob2 .38s ease-in-out infinite}
+  .cust.walkin .legL,.cust.walkin .armR{animation:swingA .38s ease-in-out infinite}
+  .cust.walkin .legR,.cust.walkin .armL{animation:swingB .38s ease-in-out infinite}
+  @keyframes bob2{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+  @keyframes swingA{0%,100%{transform:rotate(16deg)}50%{transform:rotate(-16deg)}}
+  @keyframes swingB{0%,100%{transform:rotate(-16deg)}50%{transform:rotate(16deg)}}
+  .cust.sit .legL,.cust.sit .legR{display:none}
+  .cust.sit{transform:translate(-50%,-88%)}
+  .person .eyeHappy,.person .browL,.person .browR,.person .mouthSad{display:none}
+  .person.happy .eyeDot{display:none}
+  .person.happy .eyeHappy{display:block}
+  .person.mad .browL,.person.mad .browR{display:block}
+  .person.mad .mouth{display:none}
+  .person.mad .mouthSad{display:block}
+  .bubble{position:absolute;top:-6px;left:50%;transform:translateX(-50%);background:#FBF6EC;color:#2B1B12;
+    border-radius:12px;padding:4px 8px;font-size:12.5px;font-weight:700;white-space:nowrap;
+    box-shadow:0 3px 8px rgba(0,0,0,.3);z-index:6;animation:bubbleIn .25s ease-out}
+  @keyframes bubbleIn{from{transform:translateX(-50%) scale(.5);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+  .bubble::after{content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+    border:6px solid transparent;border-top-color:#FBF6EC;border-bottom:0}
+  .bubble.warn{background:#ffd9d9}
+  .bubble.make{background:#ffedca}
+  .pat{position:absolute;bottom:2%;left:50%;transform:translateX(-50%);width:64%;height:6px;
+    background:rgba(0,0,0,.42);border-radius:4px;overflow:hidden}
+  .pat i{display:block;height:100%;background:#9FD9B8;border-radius:4px}
+  .pat i.low{background:#C45D6A}
+  .petzone{position:absolute;left:0;right:0;bottom:0;height:17%;z-index:4;pointer-events:none}
+  .roampet{position:absolute;bottom:5%;font-size:clamp(20px,6vmin,30px);cursor:pointer;pointer-events:auto;
+    filter:drop-shadow(0 3px 4px rgba(0,0,0,.4));transition:left 3.2s ease-in-out}
+  .roampet::after{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);
+    width:72%;height:7px;border-radius:50%;background:rgba(20,10,5,.32)}
+  .float{position:fixed;font-family:"Baloo 2","Noto Sans TC";font-weight:800;font-size:13.5px;color:#ffd9a3;
+    background:rgba(43,27,18,.9);border:1.5px solid #C68A3E;padding:4px 11px;border-radius:999px;
+    box-shadow:0 4px 10px rgba(0,0,0,.4);animation:floatUp 1.05s ease-out forwards;pointer-events:none;z-index:80;white-space:nowrap}
+  .float.spark{background:none;border:none;box-shadow:none;padding:0;font-size:17px}
+  @keyframes floatUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-42px)}}
+  .stockbar{display:flex;justify-content:space-around;align-items:center;margin-top:10px;
+    background:linear-gradient(180deg,#43301f,#382818);border:1.5px solid #5a4130;border-radius:14px;padding:9px 6px}
+  .stockbar span{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:14px;color:#ffe6c2}
+  .stockbar span.zero{color:#8f6f5a;opacity:.7}
+
+  /* ---- 覆蓋層 ---- */
+  .overlay{position:fixed;inset:0;background:rgba(20,12,7,.8);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}
+  .card{background:linear-gradient(180deg,#38281c,#291c14);border:1px solid #5a4130;border-radius:22px;
+    padding:22px;max-width:360px;width:100%;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.6);position:relative;z-index:51}
+  .card h3{font-family:"Baloo 2","Noto Sans TC";font-weight:800;font-size:20px;color:#ffe6c2;margin:0 0 8px}
+  .card .body{font-size:14px;color:#e9d9c0;line-height:1.7;margin-bottom:14px}
+  .card .btn{margin-top:8px}
+  .bigicon{font-size:58px;line-height:1.2;margin-bottom:4px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
+  .bigicon.bounce{animation:bounce .9s ease infinite}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  .rows{text-align:left;margin:12px 0;font-size:14px}
+  .rows div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #4a3526}
+  .rows b{color:#ffe6c2;font-family:"Baloo 2","Noto Sans TC"}
+  .score{font-family:"Baloo 2","Noto Sans TC";font-weight:800;font-size:44px;color:#ffd9a3;line-height:1.1}
+  .stars{font-size:26px;letter-spacing:3px;margin:2px 0 6px}
+  .burnt{color:var(--berry);font-weight:700}
+  .affbar{height:14px;background:#1d1209;border-radius:8px;overflow:hidden;margin:8px 0 4px;border:1px solid #4a3526}
+  .affbar i{display:block;height:100%;background:linear-gradient(90deg,#C45D6A,#ff8fa0);border-radius:8px;transition:width .5s ease}
+  .afftext{font-size:12px;color:#f2b9c0;margin-bottom:10px}
+  .straymsg{min-height:22px;font-size:13px;color:#ffd9a3;margin-bottom:8px}
+  .hearts-fx{position:absolute;left:50%;top:70px;transform:translateX(-50%);font-size:22px;pointer-events:none}
+  .hearts-fx span{position:absolute;animation:heartUp 1.1s ease-out forwards}
+  @keyframes heartUp{from{opacity:1;transform:translate(0,0) scale(.7)}to{opacity:0;transform:translate(var(--dx),-56px) scale(1.25)}}
+
+  /* ---- 烘豆小遊戲 ---- */
+  #roastOv .card{max-width:430px;padding:16px}
+  canvas#rocv{width:100%;display:block;border-radius:16px;background:#1d1209;touch-action:none}
+  .heatrow{display:flex;align-items:center;gap:10px;margin:12px 0 10px}
+  .heatrow label{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:14px;min-width:54px;color:#ffd9a3}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:14px;border-radius:8px;
+    background:linear-gradient(90deg,#5a4130,#C68A3E,#C45D6A);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;
+    background:#FBF6EC;border:3px solid #C68A3E;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.4)}
+  input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#FBF6EC;border:3px solid #C68A3E;cursor:pointer}
+
+  /* ---- 手沖小遊戲 ---- */
+  #pourStage{display:flex;gap:18px;justify-content:center;align-items:flex-end;margin:8px 0 12px}
+  .pgauge{position:relative;width:46px;height:180px;background:#1d1209;border:1.5px solid #5a4130;border-radius:12px;overflow:hidden}
+  .pzone{position:absolute;left:0;right:0;background:rgba(159,217,184,.35);border-top:2px solid #9FD9B8;border-bottom:2px solid #9FD9B8}
+  .pneedle{position:absolute;left:-4px;right:-4px;height:5px;background:#ffd9a3;border-radius:3px;
+    box-shadow:0 0 8px rgba(255,217,163,.8)}
+  .pcupbox{text-align:center}
+  .pcup{position:relative;width:96px;height:110px;margin:0 auto;
+    border:5px solid #e8d5b8;border-top:none;border-radius:0 0 40px 40px;background:#2a1c12;overflow:hidden}
+  .pcup::before{content:"";position:absolute;right:-26px;top:16px;width:30px;height:44px;
+    border:5px solid #e8d5b8;border-left:none;border-radius:0 24px 24px 0}
+  .pwater{position:absolute;left:0;right:0;bottom:0;height:0%;
+    background:linear-gradient(180deg,#8a5a34,#5f3a1e);transition:height .15s linear}
+  .pwater::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:rgba(255,220,170,.35);border-radius:50%}
+  .pdrip{position:absolute;left:50%;top:-4px;width:5px;background:linear-gradient(180deg,#d9b07e,#8a5a34);
+    transform:translateX(-50%);border-radius:3px;opacity:0;transition:opacity .1s}
+  .plabel{font-size:12px;color:#cdb79a;margin-top:6px}
+  #pourBtn{touch-action:none}
+  .miniScore{font-family:"Baloo 2","Noto Sans TC";font-weight:800;font-size:15px;color:#9fd9b8;min-height:20px;margin-bottom:4px}
+
+  /* ---- 拉花小遊戲 ---- */
+  #latteStage{position:relative;width:210px;height:210px;margin:6px auto 12px}
+  .lsaucer{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 40% 32%,#f6ead2,#d9c39c)}
+  .lcup{position:absolute;inset:13px;border-radius:50%;background:radial-gradient(circle at 42% 35%,#fdf6ea,#e8d5b8);
+    box-shadow:inset 0 4px 10px rgba(120,80,40,.25)}
+  .lcoffee{position:absolute;inset:26px;border-radius:50%;overflow:hidden;
+    background:radial-gradient(circle at 45% 38%,#a9713c,#6b4322)}
+  .ltarget{position:absolute;width:20px;height:20px;border-radius:50%;border:3px dashed #ffe6c2;
+    transform:translate(-50%,-50%);opacity:.35;transition:.2s}
+  .ltarget.now{opacity:1;box-shadow:0 0 12px rgba(255,230,194,.7);animation:pulse 0.8s ease infinite}
+  @keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.25)}}
+  .lpetal{position:absolute;width:22px;height:22px;border-radius:50% 50% 50% 4px;background:#fdf3e3;
+    transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 1px 3px rgba(90,50,20,.3);animation:petalIn .25s ease-out}
+  @keyframes petalIn{from{transform:translate(-50%,-50%) rotate(45deg) scale(0)}to{transform:translate(-50%,-50%) rotate(45deg) scale(1)}}
+  .lwand{position:absolute;left:50%;top:50%;width:4px;height:50%;transform-origin:top center;
+    background:linear-gradient(180deg,transparent 22%,#ffd9a3 22%);border-radius:3px;z-index:3;
+    filter:drop-shadow(0 0 6px rgba(255,217,163,.7))}
+  .lwand::after{content:"🥛";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);font-size:20px}
+
+  /* ---- 蛋糕小遊戲 ---- */
+  #cakeSteps{display:flex;justify-content:center;gap:14px;margin-bottom:8px;font-size:26px}
+  #cakeSteps span{opacity:.3;transition:.25s}
+  #cakeSteps span.on{opacity:1;transform:scale(1.2)}
+  #cakeSteps span.ok{opacity:1}
+  .cbar{position:relative;height:34px;background:#1d1209;border:1.5px solid #5a4130;border-radius:12px;overflow:hidden;margin:10px 0}
+  .czone{position:absolute;top:0;bottom:0;background:rgba(159,217,184,.4);border-left:2px solid #9FD9B8;border-right:2px solid #9FD9B8}
+  .cmark{position:absolute;top:-3px;bottom:-3px;width:7px;background:#ffd9a3;border-radius:4px;box-shadow:0 0 8px rgba(255,217,163,.8)}
+  #cakeLabel{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:15px;color:#ffe6c2;min-height:22px}
+
+  /* ---- 教學 / 階段小遊戲 ---- */
+  .phase-hint{font-size:12.5px;color:#cdb79a;margin-bottom:8px;line-height:1.7;text-align:left}
+  .tempval{font-family:"Baloo 2","Noto Sans TC";font-size:32px;font-weight:800;color:#ffd9a3}
+  .hlabel{font-size:12px;color:#cdb79a;display:flex;justify-content:space-between;margin-top:2px}
+  .hbar{position:relative;height:26px;background:#1d1209;border:1.5px solid #5a4130;border-radius:10px;overflow:hidden;margin:6px 0 10px}
+  .hbar .hz{position:absolute;top:0;bottom:0;background:rgba(159,217,184,.4);border-left:2px solid #9FD9B8;border-right:2px solid #9FD9B8}
+  .hbar .hf{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#8a5a34,#C68A3E)}
+  .hbar .hm{position:absolute;top:-3px;bottom:-3px;width:6px;background:#ffd9a3;border-radius:3px;box-shadow:0 0 8px rgba(255,217,163,.8)}
+  .steamrow{display:flex;gap:22px;justify-content:center;align-items:flex-end;margin:8px 0 12px}
+  .skillbox{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:4px 0 12px}
+  .skillrow{background:#33241a;border:1px solid #4a3526;border-radius:12px;padding:8px 10px;font-size:11.5px;color:#cdb79a}
+  .skillrow b{font-family:"Baloo 2","Noto Sans TC";color:#ffe6c2;font-size:13px}
+  .skillrow .sb{height:7px;background:#1d1209;border-radius:5px;margin-top:5px;overflow:hidden}
+  .skillrow .sb i{display:block;height:100%;background:linear-gradient(90deg,#5E7C6E,#9FD9B8);border-radius:5px}
+  .skillrow .auto-ok{color:#9fd9b8}
+  .tutdots{margin:10px 0 2px;letter-spacing:7px;color:#5a4130;font-size:14px}
+  .tutdots b{color:#ffd9a3}
+  .chipbtn{background:#33241a;border:1.5px solid #4a3526;border-radius:999px;padding:6px 12px;color:#e9d9c0;
+    font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:12.5px;cursor:pointer}
+  .chipbtn.on{background:#5E7C6E;border-color:#74957f;color:#fff}
+
+  /* ---- 手沖壺場景 / 咖啡機場景 / 描花 ---- */
+  .scenebox{position:relative;width:100%;border-radius:16px;background:linear-gradient(180deg,#241811,#1d1209);
+    border:1.5px solid #5a4130;overflow:hidden;touch-action:none;margin:6px 0 10px}
+  .scenebox svg{display:block;width:100%;height:auto}
+  #traceWrap{position:relative;width:210px;height:210px;margin:6px auto 8px;touch-action:none}
+  #traceCv{position:absolute;left:27px;top:27px;width:156px;height:156px;border-radius:50%;touch-action:none;cursor:crosshair}
+  .steampuff{position:absolute;border-radius:50%;background:rgba(238,244,248,.8);pointer-events:none;
+    animation:puffUp .8s ease-out forwards}
+  @keyframes puffUp{from{opacity:.85;transform:translateY(0) scale(.6)}to{opacity:0;transform:translateY(-30px) scale(1.6)}}
+
+  /* ---- 常客系統 ---- */
+  .vipcard{display:flex;align-items:center;gap:11px;background:linear-gradient(180deg,#43301f,#382818);
+    border:1.5px solid #5a4130;border-radius:16px;padding:11px;margin-bottom:8px}
+  .vipcard .vav{width:44px;height:66px;flex-shrink:0;border-radius:10px;background:#33241a;overflow:hidden}
+  .vipcard .vav svg{width:100%;height:100%}
+  .vipcard .vinfo{flex:1;min-width:0}
+  .vipcard .vn{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:14px;color:#ffe6c2}
+  .vipcard .vd{font-size:11.5px;color:#cdb79a;margin-top:2px;line-height:1.5}
+  .vipcard .vfav{font-size:11px;color:#9fd9b8;margin-top:2px}
+  .vipcard .vhearts{font-size:12px;margin-top:3px;letter-spacing:1px}
+  .vipcard.unknown{opacity:.5}
+  .custbubble{font-size:12px;color:#e9d9c0;line-height:1.6;margin-bottom:6px;text-align:left;
+    background:#33241a;border:1px solid #4a3526;border-radius:14px;padding:10px 12px}
+  .custbubble .cname{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:13px;color:#ffe6c2}
+
+  /* ---- 存檔欄位 ---- */
+  .slotgrid{display:flex;flex-direction:column;gap:9px;margin:10px 0}
+  .slot{display:flex;align-items:center;gap:11px;background:linear-gradient(180deg,#43301f,#382818);
+    border:1.5px solid #5a4130;border-radius:16px;padding:12px;cursor:pointer;transition:.12s;position:relative;overflow:hidden}
+  .slot:active{transform:translateY(1px)}
+  .slot.empty{opacity:.6}
+  .slot.sel{border-color:#C68A3E;box-shadow:0 0 0 2px rgba(198,138,62,.35)}
+  .slot .snum{width:32px;height:32px;border-radius:10px;background:#5a4130;display:flex;align-items:center;justify-content:center;
+    font-family:"Baloo 2";font-weight:800;font-size:15px;color:#ffe6c2;flex-shrink:0}
+  .slot.sel .snum{background:#C68A3E;color:#2a1a10}
+  .slot .sinfo{flex:1;min-width:0}
+  .slot .stitle{font-family:"Baloo 2","Noto Sans TC";font-weight:700;font-size:14px;color:#ffe6c2}
+  .slot .sdetail{font-size:11.5px;color:#cdb79a;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
+  .slot .sdetail span{white-space:nowrap}
+  .slot .sdel{position:absolute;right:8px;top:8px;background:none;border:none;color:#8f6f5a;font-size:14px;cursor:pointer;padding:4px 6px}
+  .slot .sdel:hover{color:#C45D6A}
+  .slotacts{display:flex;gap:8px;margin-top:4px}
+  .slotacts .btn{flex:1}
+
+
+
+  /* ---- 美術強化包 v2：暖光、質感、手機遊戲感 ---- */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+    background:
+      radial-gradient(circle at 50% -10%,rgba(255,217,163,.20),transparent 38%),
+      radial-gradient(circle at 8% 72%,rgba(196,93,106,.10),transparent 28%),
+      radial-gradient(circle at 92% 24%,rgba(159,217,184,.10),transparent 30%);
+    animation:bgBreath 7s ease-in-out infinite alternate}
+  @keyframes bgBreath{from{opacity:.72;filter:saturate(.95)}to{opacity:1;filter:saturate(1.18)}}
+  .wrap{animation:wrapIn .45s ease-out both}
+  @keyframes wrapIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+  .panel,.card{border-color:rgba(255,217,163,.22)!important;
+    background:
+      linear-gradient(180deg,rgba(255,236,204,.055),transparent 26%),
+      linear-gradient(180deg,#3d2a1c,#26170f)!important;
+    box-shadow:0 20px 58px rgba(0,0,0,.56),0 0 0 1px rgba(255,255,255,.025),inset 0 1px 0 rgba(255,241,214,.11)!important}
+  .panel::after,.card::after{content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(140deg,rgba(255,255,255,.075),transparent 30%,rgba(255,217,163,.035) 72%,transparent)}
+  .btn,.buy,.back,.chipbtn,.pill{filter:drop-shadow(0 5px 10px rgba(0,0,0,.18))}
+  .btn:hover,.buy:hover,.back:hover,.chipbtn:hover{filter:brightness(1.06) drop-shadow(0 6px 12px rgba(0,0,0,.22))}
+  .btn.drop,.buy{background:linear-gradient(180deg,#ffd27f 0%,#df9f49 48%,#b56f29 100%)!important}
+  .btn.go{background:linear-gradient(180deg,#94c6a6 0%,#5E7C6E 58%,#435c50 100%)!important}
+  .btn.pink{background:linear-gradient(180deg,#f3a3af 0%,#C45D6A 58%,#93424d 100%)!important}
+  .btn.ghost,.back,.chipbtn{background:linear-gradient(180deg,#443023,#2a1b13)!important;border-color:rgba(255,217,163,.18)!important}
+  #scr-title h1{position:relative;text-shadow:0 7px 18px rgba(0,0,0,.45);animation:titleFloat 3.8s ease-in-out infinite}
+  @keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  #titleArt{border-radius:24px;transform-origin:center;animation:titleCard 5.5s ease-in-out infinite;
+    filter:drop-shadow(0 18px 28px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,195,112,.16))}
+  @keyframes titleCard{0%,100%{transform:rotate(-.4deg)}50%{transform:rotate(.4deg) translateY(-2px)}}
+  .hud{position:sticky;top:8px;z-index:20;backdrop-filter:blur(6px)}
+  .pill{background:linear-gradient(180deg,rgba(85,58,38,.94),rgba(43,28,18,.94))!important;border:1px solid rgba(255,217,163,.18)!important}
+  .beancard,.shopitem,.petcard,.vipcard,.slot,.skillrow,.stockbar{position:relative;overflow:hidden;
+    background:linear-gradient(180deg,#4b3424,#332115)!important;border-color:rgba(255,217,163,.18)!important}
+  .beancard::before,.shopitem::before,.petcard::before,.vipcard::before,.slot::before,.skillrow::before,.stockbar::before{
+    content:"";position:absolute;left:-30%;top:0;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);transform:skewX(-18deg);opacity:.7}
+  .room{border:1px solid rgba(255,217,163,.18);box-shadow:inset 0 0 0 3px rgba(58,42,30,.9),0 14px 36px rgba(0,0,0,.45)!important;background:#2a1a10}
+  .room::before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
+    background:
+      radial-gradient(circle at 26% 12%,rgba(255,236,184,.20),transparent 23%),
+      radial-gradient(circle at 52% 10%,rgba(255,236,184,.16),transparent 22%),
+      linear-gradient(180deg,transparent 60%,rgba(42,22,10,.12));mix-blend-mode:screen}
+  .bubble{border:2px solid rgba(255,217,163,.55);box-shadow:0 8px 18px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.6)}
+  .bubble.make{animation:makingPulse .7s ease-in-out infinite alternate}
+  @keyframes makingPulse{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.06)}}
+  .roampet{animation:petBounce 1.9s ease-in-out infinite}
+  @keyframes petBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  .timebar{box-shadow:inset 0 2px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,217,163,.08)}
+  .timebar i{background:linear-gradient(90deg,#b9f5d3,#ffd27f,#ef8f9d)!important;box-shadow:0 0 14px rgba(255,217,163,.35)}
+  .float.spark{text-shadow:0 0 10px rgba(255,217,163,.9)}
+  .overlay{backdrop-filter:blur(5px);background:rgba(20,12,7,.72)!important}
+  .bigicon{animation:iconGlow 2.4s ease-in-out infinite alternate}
+  @keyframes iconGlow{from{filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}to{filter:drop-shadow(0 8px 16px rgba(255,217,163,.28))}}
+  .vipcard .vav{box-shadow:inset 0 0 0 2px rgba(255,217,163,.16),0 8px 14px rgba(0,0,0,.26)}
+  @media (max-width:420px){body{padding:8px}.row{gap:6px}.btn{font-size:16px;padding:13px}.btn.ghost{font-size:14px}.beanshelf{gap:6px}.cafehud{font-size:12.5px}.stockbar span{font-size:12.5px}}
+
+  /* ---- 提示 ---- */
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#FBF6EC;color:#2B1B12;
+    font-weight:700;font-size:14px;padding:10px 18px;border-radius:999px;
+    border:2px solid #C68A3E;box-shadow:0 8px 24px rgba(0,0,0,.5);
+    opacity:0;transition:opacity .25s;pointer-events:none;z-index:99;white-space:nowrap}
+  #toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 標題 -->
+  <div id="scr-title">
+    <svg id="titleArt" viewBox="0 0 260 190" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="duskSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#31396B"/><stop offset=".62" stop-color="#7a4f74"/><stop offset="1" stop-color="#c9705f"/>
+        </linearGradient>
+        <radialGradient id="lampGlowT" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="rgba(255,214,140,.6)"/><stop offset="1" stop-color="rgba(255,214,140,0)"/>
+        </radialGradient>
+      </defs>
+      <rect x="4" y="2" width="252" height="176" rx="18" fill="url(#duskSky)"/>
+      <g fill="#FFF3D0">
+        <circle class="tw" cx="34" cy="24" r="1.7"/><circle class="tw t2" cx="70" cy="14" r="1.3"/>
+        <circle class="tw t3" cx="118" cy="20" r="1.6"/><circle class="tw t2" cx="176" cy="12" r="1.3"/>
+        <circle class="tw" cx="214" cy="26" r="1.7"/><circle class="tw t3" cx="242" cy="16" r="1.3"/>
+      </g>
+      <path d="M226 34 a11 11 0 1 0 10 16 a9 9 0 0 1 -10 -16 Z" fill="#FFE9A8" opacity=".95"/>
+      <line x1="22" y1="176" x2="22" y2="112" stroke="#3a2a1e" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="22" cy="108" r="7" fill="#FFE9A8"/>
+      <circle cx="22" cy="108" r="20" fill="url(#lampGlowT)"/>
+      <ellipse cx="130" cy="178" rx="112" ry="9" fill="rgba(0,0,0,.4)"/>
+      <rect x="30" y="70" width="200" height="104" rx="10" fill="#8A5A34"/>
+      <rect x="30" y="70" width="200" height="10" fill="#6e4526"/>
+      <path d="M22 72 L130 30 L238 72 Z" fill="#A5683B"/>
+      <g>
+        <path d="M40 70 Q47 52 54 70 Z" fill="#C45D6A"/><path d="M54 70 Q61 52 68 70 Z" fill="#FBF6EC"/>
+        <path d="M68 70 Q75 52 82 70 Z" fill="#C45D6A"/><path d="M82 70 Q89 52 96 70 Z" fill="#FBF6EC"/>
+        <path d="M96 70 Q103 52 110 70 Z" fill="#C45D6A"/><path d="M110 70 Q117 52 124 70 Z" fill="#FBF6EC"/>
+        <path d="M124 70 Q131 52 138 70 Z" fill="#C45D6A"/><path d="M138 70 Q145 52 152 70 Z" fill="#FBF6EC"/>
+        <path d="M152 70 Q159 52 166 70 Z" fill="#C45D6A"/><path d="M166 70 Q173 52 180 70 Z" fill="#FBF6EC"/>
+        <path d="M180 70 Q187 52 194 70 Z" fill="#C45D6A"/><path d="M194 70 Q201 52 208 70 Z" fill="#FBF6EC"/>
+        <path d="M208 70 Q215 52 222 70 Z" fill="#C45D6A"/>
+      </g>
+      <rect x="46" y="96" width="62" height="52" rx="7" fill="#FFE9B8" stroke="#5a3a20" stroke-width="4" class="glowWin"/>
+      <line x1="77" y1="96" x2="77" y2="148" stroke="#5a3a20" stroke-width="3"/>
+      <line x1="46" y1="122" x2="108" y2="122" stroke="#5a3a20" stroke-width="3"/>
+      <text x="77" y="140" font-size="16" text-anchor="middle">🐈</text>
+      <rect x="152" y="100" width="52" height="74" rx="6" fill="#5E7C6E" stroke="#3f574c" stroke-width="4"/>
+      <circle cx="196" cy="138" r="4" fill="#ffd9a3"/>
+      <rect x="118" y="80" width="30" height="34" rx="5" fill="#FBF6EC" class="glowWin g2"/>
+      <text x="133" y="103" font-size="15" text-anchor="middle">☕</text>
+      <g fill="#EDE3D0" opacity=".9">
+        <ellipse class="steam" cx="126" cy="72" rx="4" ry="6"/>
+        <ellipse class="steam s2" cx="133" cy="70" rx="4" ry="6"/>
+        <ellipse class="steam s3" cx="140" cy="72" rx="4" ry="6"/>
+      </g>
+      <text x="222" y="172" font-size="18" text-anchor="middle">🐕</text>
+      <text x="36" y="172" font-size="14" text-anchor="middle">🪴</text>
+    </svg>
+    <h1>浪浪咖啡館</h1>
+    <div class="sub">烘豆・手沖・拉花・和路過的毛孩交朋友</div>
+    <button class="btn drop" id="btnPlay">開始遊戲</button>
+    <div id="storeWarn" class="hidden" style="margin-top:12px;font-size:12.5px;color:#f2b9c0;line-height:1.6">
+      ⚠ 這個瀏覽器環境無法自動存檔<br>請用「存檔代碼」手動備份進度</div>
+  </div>
+
+  <!-- 早晨準備 -->
+  <div id="scr-morning" class="hidden">
+    <div class="hud">
+      <div class="pill" id="hudDay">Day 1</div>
+      <div class="pill money" id="hudMoney">$160</div>
+      <div class="pill rep" id="hudRep">⭐ 0</div>
+      <div class="pill" id="hudFood">🥫 2</div>
+      <button class="pill" id="hudSave" style="cursor:pointer;border:1px solid #4a3526;background:#33241a">💾</button>
+    </div>
+    <div class="panel">
+      <h1 style="font-size:21px;margin-top:0">☀️ 開店準備</h1>
+      <div class="greet" id="greet">今天也要好好烘豆、好好招待客人。</div>
+      <div class="petstrip" id="petstrip"></div>
+      <div class="sect" style="margin-top:6px">今日備料</div>
+      <div class="beanshelf" id="beanshelf"></div>
+      <div class="sect">熟練度</div>
+      <div class="skillbox" id="skillbox"></div>
+      <div class="menu-actions">
+        <div class="row">
+          <button class="btn drop" id="btnRoast">🔥 烘豆</button>
+          <button class="btn pink" id="btnCake">🍰 做蛋糕</button>
+        </div>
+        <div class="row hidden" id="autoRow">
+          <button class="btn ghost mini hidden" id="btnRoastAuto">🤖 自動烘豆 $35</button>
+          <button class="btn ghost mini hidden" id="btnCakeAuto">🤖 自動蛋糕 $30</button>
+        </div>
+        <div class="row">
+          <button class="btn ghost" id="btnShop">🛒 商店</button>
+          <button class="btn ghost" id="btnPets">🐾 夥伴</button>
+          <button class="btn ghost" id="btnVips">👥 常客</button>
+        </div>
+        <button class="btn go" id="btnOpen">🔔 開店營業</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 商店 -->
+  <div id="scr-shop" class="hidden">
+    <div class="hud">
+      <div class="pill money" id="shopMoney">$0</div>
+      <div class="pill" id="shopFood">🥫 0</div>
+    </div>
+    <div class="panel">
+      <div class="pagehead"><h2>🛒 商店</h2><button class="back" id="shopBack">返回</button></div>
+      <div id="shopList"></div>
+    </div>
+  </div>
+
+  <!-- 夥伴 -->
+  <div id="scr-pets" class="hidden">
+    <div class="panel">
+      <div class="pagehead"><h2>🐾 毛孩夥伴</h2><button class="back" id="petsBack">返回</button></div>
+      <div id="petsList"></div>
+    </div>
+  </div>
+
+  <!-- 常客圖鑑 -->
+  <div id="scr-vips" class="hidden">
+    <div class="panel">
+      <div class="pagehead"><h2>👥 常客圖鑑</h2><button class="back" id="vipsBack">返回</button></div>
+      <div id="vipsList"></div>
+    </div>
+  </div>
+
+  <!-- 營業中 (scr-vips above) -->
+  <div id="scr-cafe" class="hidden">
+    <div class="hud">
+      <div class="pill" id="cafeDay">Day 1</div>
+      <div class="pill money" id="cafeMoney">$0</div>
+      <div class="pill" id="cafeServed">☕ 0</div>
+    </div>
+    <div class="panel">
+      <div class="timebar"><i id="timefill"></i></div>
+      <div class="cafehud"><span id="cafeClock">營業中</span>
+        <span style="display:flex;gap:8px;align-items:center">
+          <button class="chipbtn hidden" id="autoTgl">🤖 自動：關</button>
+          <span id="cafeIncome">今日 +$0</span></span></div>
+      <div class="room" id="room">
+        <svg viewBox="0 0 500 340" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop id="skyA" offset="0" stop-color="#BFE3F0"/><stop id="skyB" offset="1" stop-color="#F3EBC9"/>
+            </linearGradient>
+            <radialGradient id="lampGlow" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="rgba(255,214,140,.55)"/><stop offset="1" stop-color="rgba(255,214,140,0)"/>
+            </radialGradient>
+          </defs>
+          <!-- 牆與地板 -->
+          <rect x="0" y="0" width="500" height="168" fill="#EBDCC0"/>
+          <rect x="0" y="0" width="500" height="168" fill="url(#wallstripe)" opacity=".5"/>
+          <pattern id="wallstripe" width="26" height="26" patternUnits="userSpaceOnUse">
+            <rect width="26" height="26" fill="none"/><circle cx="13" cy="13" r="1.4" fill="#DECBA8"/>
+          </pattern>
+          <rect x="0" y="152" width="500" height="14" fill="#B98A5C"/>
+          <rect x="0" y="152" width="500" height="4" fill="#9e7148"/>
+          <rect x="0" y="166" width="500" height="174" fill="#C89A66"/>
+          <g stroke="#B4885A" stroke-width="2">
+            <line x1="0" y1="196" x2="500" y2="196"/><line x1="0" y1="228" x2="500" y2="228"/>
+            <line x1="0" y1="262" x2="500" y2="262"/><line x1="0" y1="298" x2="500" y2="298"/>
+          </g>
+          <!-- 窗光灑地 -->
+          <polygon points="30,110 112,110 152,178 8,178" fill="rgba(255,238,196,.10)"/>
+          <polygon points="144,110 224,110 266,176 122,176" fill="rgba(255,238,196,.08)"/>
+          <g stroke="#B4885A" stroke-width="2" opacity=".8">
+            <line x1="90" y1="166" x2="90" y2="196"/><line x1="240" y1="166" x2="240" y2="196"/><line x1="400" y1="166" x2="400" y2="196"/>
+            <line x1="40" y1="196" x2="40" y2="228"/><line x1="180" y1="196" x2="180" y2="228"/><line x1="330" y1="196" x2="330" y2="228"/><line x1="460" y1="196" x2="460" y2="228"/>
+            <line x1="120" y1="228" x2="120" y2="262"/><line x1="280" y1="228" x2="280" y2="262"/><line x1="430" y1="228" x2="430" y2="262"/>
+            <line x1="70" y1="262" x2="70" y2="298"/><line x1="220" y1="262" x2="220" y2="298"/><line x1="380" y1="262" x2="380" y2="298"/>
+            <line x1="150" y1="298" x2="150" y2="340"/><line x1="320" y1="298" x2="320" y2="340"/>
+          </g>
+          <!-- 窗戶 -->
+          <g>
+            <rect x="26" y="26" width="88" height="78" rx="8" fill="#7A5537"/>
+            <rect x="32" y="32" width="76" height="66" rx="5" fill="url(#sky)"/>
+            <circle cx="92" cy="46" r="9" fill="#FFE9A8" opacity=".9"/>
+            <path d="M40 84 Q52 74 64 84 Q76 74 88 84" fill="none" stroke="#A8CBB4" stroke-width="5" stroke-linecap="round"/>
+            <line x1="70" y1="32" x2="70" y2="98" stroke="#7A5537" stroke-width="5"/>
+            <line x1="32" y1="64" x2="108" y2="64" stroke="#7A5537" stroke-width="5"/>
+            <rect x="24" y="100" width="92" height="8" rx="4" fill="#8a6240"/>
+          </g>
+          <g>
+            <rect x="140" y="26" width="88" height="78" rx="8" fill="#7A5537"/>
+            <rect x="146" y="32" width="76" height="66" rx="5" fill="url(#sky)"/>
+            <path d="M154 88 Q170 70 186 88 Q202 74 216 88" fill="none" stroke="#A8CBB4" stroke-width="5" stroke-linecap="round"/>
+            <line x1="184" y1="32" x2="184" y2="98" stroke="#7A5537" stroke-width="5"/>
+            <line x1="146" y1="64" x2="222" y2="64" stroke="#7A5537" stroke-width="5"/>
+            <rect x="138" y="100" width="92" height="8" rx="4" fill="#8a6240"/>
+          </g>
+          <!-- 吧台（右側） -->
+          <g>
+            <rect x="300" y="118" width="200" height="14" rx="4" fill="#D9B07E"/>
+            <rect x="304" y="132" width="196" height="36" fill="#8A5A34"/>
+            <g fill="#75492a"><rect x="316" y="138" width="30" height="24" rx="4"/><rect x="356" y="138" width="30" height="24" rx="4"/>
+              <rect x="396" y="138" width="30" height="24" rx="4"/><rect x="436" y="138" width="30" height="24" rx="4"/></g>
+            <!-- 濃縮咖啡機 -->
+            <g>
+              <rect x="312" y="84" width="66" height="36" rx="7" fill="#C9D2D8"/>
+              <rect x="312" y="84" width="66" height="10" rx="5" fill="#A9B4BC"/>
+              <rect x="326" y="112" width="10" height="9" fill="#7d878e"/>
+              <rect x="354" y="112" width="10" height="9" fill="#7d878e"/>
+              <circle cx="368" cy="100" r="5" fill="#C45D6A"/>
+              <rect x="322" y="121" width="46" height="4" rx="2" fill="#8d979e"/>
+            </g>
+            <!-- 蛋糕罩 -->
+            <g>
+              <path d="M398 118 a20 20 0 0 1 40 0 Z" fill="rgba(214,236,244,.65)" stroke="#bcd6de" stroke-width="2"/>
+              <text x="418" y="115" font-size="15" text-anchor="middle">🍰</text>
+              <rect x="394" y="118" width="48" height="5" rx="2.5" fill="#e8d5b8"/>
+            </g>
+            <!-- 磨豆機與杯子 -->
+            <text x="456" y="116" font-size="18" text-anchor="middle">⚗️</text>
+            <g fill="#FBF6EC"><rect x="470" y="104" width="12" height="10" rx="2"/><rect x="470" y="92" width="12" height="10" rx="2"/></g>
+          </g>
+          <!-- 層架與雜貨 -->
+          <g>
+            <rect x="246" y="44" width="118" height="8" rx="4" fill="#8a6240"/>
+            <rect x="254" y="24" width="14" height="20" rx="3" fill="#C68A3E"/>
+            <rect x="274" y="20" width="14" height="24" rx="3" fill="#A5683B"/>
+            <rect x="294" y="26" width="14" height="18" rx="3" fill="#C45D6A"/>
+            <text x="326" y="42" font-size="17">🪴</text>
+            <text x="350" y="42" font-size="15">📚</text>
+          </g>
+          <!-- 黑板菜單 -->
+          <g>
+            <rect x="386" y="24" width="86" height="64" rx="7" fill="#3E4A41" stroke="#8a6240" stroke-width="5"/>
+            <text x="429" y="45" font-size="12" text-anchor="middle" fill="#F4ECDD" font-family="sans-serif">MENU ☕</text>
+            <line x1="398" y1="56" x2="452" y2="56" stroke="#cdd8cf" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="398" y1="66" x2="460" y2="66" stroke="#cdd8cf" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+            <line x1="398" y1="76" x2="444" y2="76" stroke="#cdd8cf" stroke-width="2.5" stroke-linecap="round" opacity=".5"/>
+          </g>
+          <!-- 燈下光池 -->
+          <ellipse cx="130" cy="188" rx="70" ry="17" fill="rgba(255,214,140,.14)"/>
+          <ellipse cx="250" cy="182" rx="62" ry="15" fill="rgba(255,214,140,.12)"/>
+          <!-- 掛畫 -->
+          <g>
+            <rect x="114" y="30" width="22" height="28" rx="3" fill="#8a6240"/>
+            <rect x="117" y="33" width="16" height="22" rx="2" fill="#FBF6EC"/>
+            <path d="M125 40 c-2,-3 -6,-1 -6,2 c0,3 6,6 6,6 c0,0 6,-3 6,-6 c0,-3 -4,-5 -6,-2 Z" fill="#C45D6A"/>
+          </g>
+          <!-- 吊掛植物 -->
+          <g>
+            <rect x="350" y="52" width="16" height="11" rx="4" fill="#C45D6A" stroke="#93424d" stroke-width="2"/>
+            <path d="M354 63 q-4 12 2 22" fill="none" stroke="#6f9080" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M358 63 q1 14 -3 26" fill="none" stroke="#5E7C6E" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M362 63 q5 10 1 20" fill="none" stroke="#6f9080" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="355" cy="78" r="2.6" fill="#7fae90"/><circle cx="356" cy="88" r="2.6" fill="#7fae90"/>
+            <circle cx="362" cy="76" r="2.6" fill="#7fae90"/><circle cx="354" cy="85" r="2.3" fill="#9FD9B8"/>
+          </g>
+          <!-- 咖啡豆麻袋 -->
+          <g>
+            <path d="M266 168 q-1 -32 14 -32 q15 0 14 32 Z" fill="#C6A46B" stroke="#a9895a" stroke-width="2.5"/>
+            <ellipse cx="280" cy="137" rx="7" ry="4" fill="#b3925c" stroke="#a9895a" stroke-width="2"/>
+            <ellipse cx="275" cy="152" rx="2.4" ry="1.6" fill="#7a5230"/>
+            <ellipse cx="284" cy="148" rx="2.4" ry="1.6" fill="#7a5230"/>
+            <ellipse cx="280" cy="158" rx="2.4" ry="1.6" fill="#7a5230"/>
+          </g>
+          <!-- 吊燈 -->
+          <g>
+            <line x1="130" y1="0" x2="130" y2="20" stroke="#5a4130" stroke-width="3"/>
+            <path d="M114 34 L146 34 L138 18 L122 18 Z" fill="#E7A94F"/>
+            <circle cx="130" cy="38" r="5" fill="#FFE9A8"/>
+            <circle cx="130" cy="44" r="26" fill="url(#lampGlow)"/>
+          </g>
+          <g>
+            <line x1="250" y1="0" x2="250" y2="14" stroke="#5a4130" stroke-width="3"/>
+            <path d="M234 28 L266 28 L258 12 L242 12 Z" fill="#E7A94F"/>
+            <circle cx="250" cy="32" r="5" fill="#FFE9A8"/>
+            <circle cx="250" cy="38" r="26" fill="url(#lampGlow)"/>
+          </g>
+          <!-- 大門 -->
+          <g>
+            <rect x="4" y="50" width="56" height="120" rx="7" fill="#7A5537"/>
+            <rect x="10" y="56" width="44" height="112" rx="5" fill="#A5683B"/>
+            <rect x="16" y="62" width="32" height="40" rx="5" fill="url(#sky)" stroke="#7A5537" stroke-width="3"/>
+            <circle cx="47" cy="120" r="3.5" fill="#ffd9a3"/>
+            <rect x="12" y="140" width="40" height="5" rx="2.5" fill="#8a6240" opacity=".7"/>
+          </g>
+          <!-- 盆栽與地毯 -->
+          <text x="66" y="150" font-size="24">🪴</text>
+          <ellipse cx="250" cy="316" rx="118" ry="17" fill="#5E7C6E" opacity=".55"/>
+          <ellipse cx="250" cy="316" rx="94" ry="12" fill="#6f9080" opacity=".5"/>
+          <!-- 桌椅（座位由程式對位） -->
+          <g id="tables"></g>
+        </svg>
+        <div id="ambient"></div>
+        <div class="petzone" id="petzone"></div>
+      </div>
+      <div class="stockbar" id="stockbar"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 客人事件對話 -->
+<div class="overlay hidden" id="custEvOv">
+  <div class="card">
+    <div id="custEvAvatar" style="font-size:48px;margin-bottom:4px"></div>
+    <h3 id="custEvName">客人</h3>
+    <div class="custbubble" id="custEvMsg"></div>
+    <div id="custEvActs"></div>
+  </div>
+</div>
+
+<!-- 打烊結算 -->
+<div class="overlay hidden" id="settleOv">
+  <div class="card">
+    <h3>🌙 打烊結算</h3>
+    <div class="score" id="settleIncome">+$0</div>
+    <div class="rows">
+      <div><span>招待客人</span><b id="stServed">0 位</b></div>
+      <div><span>不耐離開</span><b id="stLost">0 位</b></div>
+      <div><span>人氣變化</span><b id="stRep">+0</b></div>
+    </div>
+    <button class="btn drop" id="settleNext">繼續</button>
+  </div>
+</div>
+
+<!-- 事件 -->
+<div class="overlay hidden" id="eventOv">
+  <div class="card">
+    <div class="bigicon" id="evIcon">📮</div>
+    <h3 id="evTitle">事件</h3>
+    <div class="body" id="evBody"></div>
+    <div id="evActs"></div>
+  </div>
+</div>
+
+<!-- 流浪動物 -->
+<div class="overlay hidden" id="strayOv">
+  <div class="card">
+    <div class="hearts-fx" id="heartsFx"></div>
+    <div class="bigicon bounce" id="syIcon">🐈</div>
+    <h3 id="syName">？？？</h3>
+    <div class="body" id="syDesc" style="margin-bottom:8px"></div>
+    <div class="affbar"><i id="syAff"></i></div>
+    <div class="afftext" id="syAffT">好感度 0 / 100</div>
+    <div class="straymsg" id="syMsg"></div>
+    <div class="row">
+      <button class="btn drop mini" id="syFeed">🥫 餵食</button>
+      <button class="btn ghost mini" id="syPet">🤚 摸摸</button>
+    </div>
+    <button class="btn ghost mini" id="syBye" style="margin-top:8px">👋 說再見</button>
+  </div>
+</div>
+
+<!-- 烘豆小遊戲 -->
+<div class="overlay hidden" id="roastOv">
+  <div class="card" style="text-align:left;max-width:430px">
+    <div class="pagehead" style="margin-bottom:8px">
+      <h2 id="roTitle" style="font-size:18px">🔥 烘豆</h2>
+    </div>
+    <canvas id="rocv"></canvas>
+    <div id="roCtrl">
+      <div class="heatrow"><label>火力 🔥</label><input id="roHeat" type="range" min="0" max="100" value="58"></div>
+      <button class="btn drop" id="roDrop">下豆 ⏏</button>
+    </div>
+    <div id="roResult" class="hidden" style="text-align:center">
+      <div class="stars" id="roStars">★★★☆☆</div>
+      <div class="score" id="roScore">0</div>
+      <div class="rows">
+        <div><span>烘焙度準確</span><b id="roAcc">—</b></div>
+        <div><span>發展均勻</span><b id="roDev">—</b></div>
+        <div><span>發展時間比</span><b id="roDtr">—</b></div>
+        <div><span>下豆豆溫</span><b id="roTemp">—</b></div>
+        <div><span>入庫</span><b id="roYield">—</b></div>
+      </div>
+      <button class="btn drop" id="roTake">收豆 ✅</button>
+    </div>
+  </div>
+</div>
+
+<!-- 選烘焙度 -->
+<div class="overlay hidden" id="pickOv">
+  <div class="card">
+    <h3>要烘哪一種豆子？</h3>
+    <div class="body">每爐需要生豆費 <b style="color:#ffd9a3">$35</b></div>
+    <div id="pickList"></div>
+    <button class="btn ghost mini" id="pickCancel" style="margin-top:6px">取消</button>
+  </div>
+</div>
+
+<!-- 手沖小遊戲（水溫 → 悶蒸 → 注水） -->
+<div class="overlay hidden" id="pourOv">
+  <div class="card">
+    <h3 id="pourTitle">🫖 手沖咖啡</h3>
+    <div class="miniScore" id="pourHint">　</div>
+    <div id="pourPh0">
+      <div class="phase-hint">🌡 選擇注水溫度——<b style="color:#ffe6c2">淺焙</b>適合高溫萃取香氣、<b style="color:#ffe6c2">深焙</b>適合低一點避免苦澀。</div>
+      <div class="tempval"><span id="pourTempV">90</span>°C</div>
+      <input id="pourTemp" type="range" min="80" max="100" value="90" style="width:100%">
+      <div class="hlabel"><span>80°C</span><span>90°C</span><span>100°C</span></div>
+      <button class="btn drop" id="pourTempOk" style="margin-top:12px">就用這個溫度 🌡</button>
+    </div>
+    <div class="scenebox hidden" id="pourScene">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="kettleMetal" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#DCE4E9"/><stop offset=".5" stop-color="#AEB9C1"/><stop offset="1" stop-color="#8D99A2"/>
+          </linearGradient>
+        </defs>
+        <!-- 流速表 -->
+        <g id="flowGauge">
+          <rect x="10" y="38" width="16" height="126" rx="7" fill="rgba(255,255,255,.07)"/>
+          <rect id="gZone" x="10" y="70" width="16" height="36" fill="rgba(159,217,184,.5)"/>
+          <rect id="gNeedle" x="7" y="160" width="22" height="4" rx="2" fill="#ffd9a3"/>
+          <text x="18" y="180" font-size="10" text-anchor="middle" fill="#cdb79a" font-family="sans-serif">水柱</text>
+        </g>
+        <!-- V60 濾杯與下壺 -->
+        <g>
+          <rect x="92" y="140" width="58" height="44" rx="8" fill="rgba(210,232,240,.16)" stroke="#9db4bd" stroke-width="2.5"/>
+          <rect id="carafeFill" x="95" y="181" width="52" height="0" rx="4" fill="#8a5a34"/>
+          <path d="M84 102 L158 102 L134 138 L108 138 Z" fill="#C45D6A" stroke="#93424d" stroke-width="3"/>
+          <path d="M84 102 L158 102 L152 111 L90 111 Z" fill="#d97f8b"/>
+          <ellipse id="bedE" cx="121" cy="107" rx="27" ry="6.5" fill="#8a6240"/>
+          <g id="bubblesG"></g>
+          <text x="121" y="196" font-size="11" text-anchor="middle" fill="#cdb79a" font-family="sans-serif">萃取 <tspan id="extPct">0</tspan>%</text>
+        </g>
+        <!-- 水柱 -->
+        <path id="streamP" d="M150 64 C146 74 133 88 122 103" fill="none" stroke="#bfe0ea" stroke-width="0" stroke-linecap="round" opacity=".9"/>
+        <!-- 手沖壺（以壺嘴為軸傾倒） -->
+        <g id="kettleG" transform="rotate(-10,150,62)">
+          <path d="M150 62 C160 50 176 44 192 48 L196 58 C182 55 168 58 158 68 Z" fill="url(#kettleMetal)" stroke="#77838c" stroke-width="1.5"/>
+          <path d="M188 42 C186 60 186 74 190 88 C196 102 226 102 232 88 C238 72 236 54 230 42 Z" fill="url(#kettleMetal)" stroke="#77838c" stroke-width="2"/>
+          <rect x="196" y="34" width="28" height="10" rx="5" fill="#8D99A2" stroke="#77838c" stroke-width="1.5"/>
+          <circle cx="210" cy="31" r="4" fill="#5E7C6E"/>
+          <path d="M198 40 C186 22 234 22 224 40" fill="none" stroke="#4a3a2c" stroke-width="7" stroke-linecap="round"/>
+          <ellipse cx="206" cy="66" rx="9" ry="16" fill="rgba(255,255,255,.25)"/>
+        </g>
+        <text id="pourTip" x="215" y="130" font-size="11.5" text-anchor="middle" fill="#ffd9a3" font-family="sans-serif">👆 按住畫面傾壺注水</text>
+      </svg>
+    </div>
+    <div id="pourPh1" class="hidden">
+      <div class="phase-hint">💧 <b style="color:#ffe6c2">悶蒸</b>：按住畫面傾壺，注入<b style="color:#9fd9b8">少量</b>熱水潤濕咖啡粉（填到綠區就放壺）→ 等排氣，在<b style="color:#9fd9b8">綠色時機</b>開始注水！</div>
+      <div class="hlabel"><span>悶蒸水量</span><span id="bloomFillV">0%</span></div>
+      <div class="hbar"><div class="hz" id="bloomZone"></div><div class="hf" id="bloomFill"></div></div>
+      <div class="hlabel"><span>咖啡粉排氣中…</span><span id="bloomState">💤</span></div>
+      <div class="hbar"><div class="hz" id="bloomTZone"></div><div class="hm" id="bloomTMark" style="left:0"></div></div>
+      <button class="btn go hidden" id="bloomGoBtn" style="margin-top:4px">🫖 開始注水！</button>
+    </div>
+    <div id="pourPh2" class="hidden">
+      <div class="phase-hint">🫖 按住畫面傾壺注水，讓<b style="color:#9fd9b8">水柱保持在綠色區間</b>，完成萃取！</div>
+    </div>
+  </div>
+</div>
+
+<!-- 拉花小遊戲（打奶泡 → 拉花） -->
+<div class="overlay hidden" id="latteOv">
+  <div class="card">
+    <h3>🥛 拿鐵拉花</h3>
+    <div class="miniScore" id="latteHint">　</div>
+    <div id="lattePh0">
+      <div class="phase-hint">💨 <b style="color:#ffe6c2">按住奶壺</b>打奶泡——奶泡量進到綠區、奶溫<b style="color:#f2b9c0">別超過 65°C</b>，兩個都剛好時放開！</div>
+      <div class="scenebox" id="steamScene">
+      <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="machineBody" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#D7DEE3"/><stop offset="1" stop-color="#A9B4BC"/>
+          </linearGradient>
+        </defs>
+        <!-- 咖啡機 -->
+        <g>
+          <rect x="24" y="24" width="172" height="118" rx="13" fill="url(#machineBody)" stroke="#8b969e" stroke-width="2.5"/>
+          <rect x="24" y="16" width="172" height="14" rx="7" fill="#8D99A2"/>
+          <rect x="52" y="6" width="26" height="12" rx="3" fill="#FBF6EC"/>
+          <rect x="90" y="6" width="26" height="12" rx="3" fill="#FBF6EC"/>
+          <rect x="38" y="40" width="96" height="40" rx="8" fill="#39424a"/>
+          <text id="mtempDisp" x="86" y="66" font-size="20" text-anchor="middle" fill="#9FD9B8" font-family="monospace" font-weight="bold">20°</text>
+          <circle cx="156" cy="52" r="8" fill="#C45D6A" stroke="#93424d" stroke-width="2"/>
+          <circle cx="178" cy="52" r="8" fill="#5E7C6E" stroke="#445a50" stroke-width="2"/>
+          <rect x="62" y="92" width="64" height="16" rx="5" fill="#7d878e"/>
+          <rect x="82" y="108" width="24" height="8" rx="4" fill="#39424a"/>
+          <path d="M106 112 L142 116 L142 122 L106 118 Z" fill="#2b3238"/>
+          <rect x="30" y="142" width="180" height="12" rx="5" fill="#77838c"/>
+          <g stroke="#5b666e" stroke-width="1.5">
+            <line x1="44" y1="146" x2="44" y2="150"/><line x1="60" y1="146" x2="60" y2="150"/>
+            <line x1="76" y1="146" x2="76" y2="150"/><line x1="92" y1="146" x2="92" y2="150"/>
+          </g>
+        </g>
+        <!-- 蒸氣棒 + 奶壺 -->
+        <g>
+          <circle cx="200" cy="46" r="7" fill="#39424a" stroke="#2b3238" stroke-width="2"/>
+          <line x1="200" y1="50" x2="234" y2="100" stroke="#8D99A2" stroke-width="6" stroke-linecap="round"/>
+          <rect x="230" y="98" width="9" height="9" rx="2" fill="#5b666e"/>
+          <g id="steamG"></g>
+          <path d="M214 106 L262 106 L256 152 L220 152 Z" fill="#DCE4E9" stroke="#8b969e" stroke-width="2.5"/>
+          <clipPath id="pitchClip"><path d="M216 108 L260 108 L254 150 L222 150 Z"/></clipPath>
+          <g clip-path="url(#pitchClip)">
+            <rect id="milkR" x="210" y="150" width="60" height="0" fill="#FBF6EC"/>
+            <rect id="foamR" x="210" y="150" width="60" height="0" fill="#fffdf6" opacity=".95"/>
+          </g>
+          <path d="M260 112 C276 116 276 134 258 140" fill="none" stroke="#8b969e" stroke-width="5" stroke-linecap="round"/>
+          <text id="steamTip" x="238" y="172" font-size="11.5" text-anchor="middle" fill="#ffd9a3" font-family="sans-serif">👆 按住奶壺打奶泡</text>
+        </g>
+      </svg>
+      </div>
+      <div class="steamrow" style="margin-top:2px">
+        <div class="pcupbox">
+          <div class="pgauge" style="height:110px"><div class="pzone" id="foamZone"></div><div class="pneedle" id="foamNeedle" style="bottom:0"></div></div>
+          <div class="plabel">奶泡量</div>
+        </div>
+        <div class="pcupbox">
+          <div class="pgauge" style="height:110px"><div class="pzone" id="mtempZone"></div><div class="pneedle" id="mtempNeedle" style="bottom:0"></div></div>
+          <div class="plabel">奶溫 <span id="mtempV">20</span>°</div>
+        </div>
+      </div>
+    </div>
+    <div id="lattePh1" class="hidden">
+      <div class="phase-hint">🎨 <b style="color:#ffe6c2">按住杯面、沿著虛線描</b>出奶泡圖案——奶量有限，描得越貼合越漂亮！</div>
+      <div id="traceWrap">
+        <div class="lsaucer"></div>
+        <div class="lcup"></div>
+        <div class="lcoffee" id="latteCoffee"></div>
+        <canvas id="traceCv"></canvas>
+      </div>
+      <div class="hlabel"><span>🥛 奶量　<b style="color:#9fd9b8">描線進度 <span id="traceSeq">0%</span></b></span><span id="milkV">100%</span></div>
+      <div class="hbar" style="margin-bottom:6px"><div class="hf" id="milkF" style="width:100%"></div></div>
+      <button class="btn drop" id="traceDone">拉好了 ✨</button>
+    </div>
+  </div>
+</div>
+
+<!-- 蛋糕小遊戲 -->
+<div class="overlay hidden" id="cakeOv">
+  <div class="card">
+    <h3>🍰 做蛋糕</h3>
+    <div id="cakeSteps"><span data-s="0">⚖️</span><span data-s="1">🥣</span><span data-s="2">🔥</span><span data-s="3">🍓</span></div>
+    <div id="cakeLabel">秤麵粉：按住倒粉，填到綠區放開！</div>
+    <div class="cbar">
+      <div class="czone" id="cakeZone"></div>
+      <div class="hf" id="cakeFill" style="position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#8a5a34,#C68A3E)"></div>
+      <div class="cmark" id="cakeMark"></div>
+    </div>
+    <button class="btn pink" id="cakeHold">⚖️ 按住倒粉</button>
+    <button class="btn pink hidden" id="cakeStop">停！</button>
+    <div id="cakeResult" class="hidden">
+      <div class="stars" id="cakeStars">★★★☆☆</div>
+      <div class="score" id="cakeScore">0</div>
+      <div class="rows"><div><span>入庫</span><b id="cakeYield">—</b></div></div>
+      <button class="btn drop" id="cakeTake">收蛋糕 ✅</button>
+    </div>
+  </div>
+</div>
+
+<!-- 存檔欄位 -->
+<div class="overlay hidden" id="slotOv">
+  <div class="card" style="max-width:380px">
+    <h3>💾 存檔欄位</h3>
+    <div class="slotgrid" id="slotGrid"></div>
+    <div class="slotacts">
+      <button class="btn drop mini" id="slotLoad" disabled>▶ 讀取</button>
+      <button class="btn go mini" id="slotSave" disabled>💾 存入</button>
+    </div>
+    <button class="btn ghost mini" id="slotNew" style="margin-top:8px">🆕 新開張（存到選中欄位）</button>
+    <button class="btn ghost mini" id="slotCode" style="margin-top:6px">📝 存檔代碼（進階備份）</button>
+    <button class="btn ghost mini" id="slotClose" style="margin-top:6px">返回</button>
+  </div>
+</div>
+
+<!-- 存檔代碼 -->
+<div class="overlay hidden" id="saveOv">
+  <div class="card">
+    <h3>📝 存檔代碼</h3>
+    <div class="body" style="margin-bottom:8px">複製這串代碼保存進度；之後貼回來按「匯入」即可還原。</div>
+    <textarea id="saveTxt" rows="5" spellcheck="false" style="width:100%;background:#1d1209;border:1.5px solid #5a4130;
+      border-radius:12px;color:#e9d9c0;font-size:11px;padding:10px;resize:none;font-family:monospace"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="btn drop mini" id="saveCopy">📋 複製</button>
+      <button class="btn go mini" id="saveImport">📥 匯入</button>
+    </div>
+    <button class="btn ghost mini" id="saveClose" style="margin-top:8px">返回</button>
+  </div>
+</div>
+
+<!-- 新手教學 -->
+<div class="overlay hidden" id="tutOv">
+  <div class="card">
+    <div class="bigicon" id="tutIcon">📖</div>
+    <h3 id="tutTitle">教學</h3>
+    <div class="body" id="tutBody" style="min-height:96px;text-align:left"></div>
+    <div class="tutdots" id="tutDots"></div>
+    <button class="btn drop" id="tutNext">下一步 →</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ================= 工具 ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const TAU=Math.PI*2;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const ri=(a,b)=>Math.floor(rnd(a,b+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(toast._h);toast._h=setTimeout(()=>t.classList.remove("show"),1800);}
+
+/* ================= 音效（Web Audio 合成） ================= */
+let AC=null;
+function ac(){if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C();}
+  if(AC&&AC.state==="suspended")AC.resume();return AC;}
+function tone(f,delay,dur,type,vol,slide){try{const a=ac();if(!a)return;
+  const t0=a.currentTime+delay,o=a.createOscillator(),g=a.createGain();
+  o.type=type||"sine";o.frequency.setValueAtTime(f,t0);
+  if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,f+slide),t0+dur);
+  g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(vol||.14,t0+.012);
+  g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+  o.connect(g).connect(a.destination);o.start(t0);o.stop(t0+dur+.05);}catch(e){}}
+const SFX={
+  tap(){tone(520,0,.06,"triangle",.1);},
+  coin(){tone(880,0,.09,"square",.09);tone(1320,.07,.15,"square",.09);},
+  ding(){tone(1180,0,.28,"sine",.13);tone(1770,.02,.34,"sine",.07);},
+  bad(){tone(300,0,.2,"sawtooth",.09,-130);},
+  meow(){tone(660,0,.26,"sine",.13,320);tone(960,.17,.22,"sine",.09,-260);},
+  woof(){tone(190,0,.1,"square",.16,-70);tone(160,.13,.12,"square",.14,-55);},
+  heart(){tone(900,0,.1,"sine",.11);tone(1350,.09,.17,"sine",.09);},
+  pop(){tone(420,0,.05,"square",.09,220);},
+  level(){tone(660,0,.1,"square",.1);tone(880,.09,.1,"square",.1);tone(1320,.18,.2,"square",.1);},
+  sad(){tone(520,0,.18,"sine",.1,-180);tone(380,.16,.24,"sine",.09,-120);},
+  splash(){tone(300,0,.14,"sine",.1,240);tone(520,.1,.12,"sine",.08,180);},
+};
+
+/* ================= 資料定義 ================= */
+const ROASTS={
+  light:{name:"淺焙",icon:"🌸"},
+  medium:{name:"中焙",icon:"🥛"},
+  dark:{name:"深焙",icon:"🍫"},
+};
+const ROASTKEYS=["light","medium","dark"];
+const ROAST_COST=35, CAKE_COST=30, CAKE_YIELD=6;
+
+const MENU={
+  pourL:{kind:"pour", bean:"light", name:"淺焙手沖", icon:"🌸", price:26},
+  pourD:{kind:"pour", bean:"dark",  name:"深焙手沖", icon:"🍫", price:24},
+  latte:{kind:"latte",bean:"medium",name:"拿鐵拉花", icon:"🦢", price:30},
+  cake: {kind:"cake",               name:"鮮莓蛋糕", icon:"🍰", price:20},
+};
+const MENUKEYS=["pourL","pourD","latte","cake"];
+
+const UPG={
+  machine:{name:"義式咖啡機",icon:"⚙️",cost:[240,520,900],
+    desc:l=>"注水更快、蒸氣更好控（萃取 "+(4.2-0.5*l).toFixed(1)+" 秒）"},
+  seats:{name:"客席座位",icon:"🪑",cost:[200,450,780],
+    desc:l=>"座位 "+(2+l)+" 席"},
+  decor:{name:"店內裝潢",icon:"🪴",cost:[180,420,760],
+    desc:l=>"小費加成 +"+(l*8)+"%，客人更有耐心"},
+  sign:{name:"門口招牌",icon:"🪧",cost:[220,560],
+    desc:l=>l===0?"路過的客人更容易上門":"招牌等級 "+l+"，來客更頻繁"},
+  roaster:{name:"烘豆機",icon:"🔥",cost:[300,680],
+    desc:l=>"每爐產量 "+(6+l*3)+" 杯份"},
+};
+function pourTime(){return 4.2-0.5*S.up.machine;}
+
+const STRAYS=[
+  {id:"orange",name:"小橘",emoji:"🐈",kind:"cat",need:100,
+   desc:"愛曬太陽的橘貓，看到罐罐眼睛會發亮。"},
+  {id:"black",name:"煤球",emoji:"🐈‍⬛",kind:"cat",need:110,
+   desc:"神出鬼沒的黑貓，尾巴永遠翹得高高的。"},
+  {id:"calico",name:"麻糬",emoji:"🐱",kind:"cat",need:95,
+   desc:"聲音軟軟的三花小貓，走路沒有聲音。"},
+  {id:"shiba",name:"阿柴",emoji:"🐕",kind:"dog",need:90,
+   desc:"笑咪咪的柴犬，尾巴從來沒停過。"},
+  {id:"puppy",name:"豆漿",emoji:"🐶",kind:"dog",need:85,
+   desc:"白色小土狗，最喜歡追著落葉跑。"},
+  {id:"golden",name:"奶茶",emoji:"🦮",kind:"dog",need:100,
+   desc:"溫柔的大狗狗，會把頭輕輕靠在你腿上。"},
+];
+const KINDNAME={cat:"貓咪",dog:"狗狗"};
+
+const SKINS=["#F5D2B8","#EFC5A5","#DDAA82","#C08B62","#A9714C"];
+const HAIRS=["#2B1B12","#4a3220","#6e4b2a","#8a5a34","#b98a4f","#555a60","#8f4a52","#3d4a63"];
+const SHIRTS=["#5E7C6E","#C45D6A","#C68A3E","#6f8fb0","#8f6fb0","#b0806f","#4f7f8f","#7f8f4f","#a0567c"];
+const PANTS=["#3c3c48","#4a3a55","#37474f","#5a4632","#414f3c"];
+const DOOR=[32,186]; // 大門位置（SVG 座標）
+function shade(hex,amt){
+  const n=parseInt(hex.slice(1),16);
+  const r=clamp((n>>16)+amt,0,255),g=clamp(((n>>8)&255)+amt,0,255),b=clamp((n&255)+amt,0,255);
+  return "rgb("+r+","+g+","+b+")";}
+function personHTML(opts){
+  const skin=(opts&&opts.skin)||pick(SKINS),hair=(opts&&opts.hair)||pick(HAIRS),
+    shirt=(opts&&opts.shirt)||pick(SHIRTS),pants=(opts&&opts.pants)||pick(PANTS);
+  const shirtD=shade(shirt,-26),style=ri(0,4);
+  const glasses=(opts&&opts.glasses)||(!opts&&Math.random()<0.2),
+    hat=(opts&&opts.hat)||(!opts&&Math.random()<0.12),hatCol=pick(SHIRTS);
+  let backHair="",hairS="";
+  const cap='<path d="M16 24 A14 14 0 0 1 44 24 Z" fill="'+hair+'"/>';
+  if(style===0)hairS=cap+'<rect x="15" y="22" width="3.5" height="7" rx="1.5" fill="'+hair+'"/><rect x="41.5" y="22" width="3.5" height="7" rx="1.5" fill="'+hair+'"/>';
+  else if(style===1)hairS=cap+'<rect x="14" y="20" width="5.5" height="15" rx="2.5" fill="'+hair+'"/><rect x="40.5" y="20" width="5.5" height="15" rx="2.5" fill="'+hair+'"/>';
+  else if(style===2)hairS=cap+'<circle cx="30" cy="8" r="5.5" fill="'+hair+'"/>';
+  else if(style===3)hairS=cap+'<path d="M16 24 L20 28 L24 24 L28 28 L32 24 L36 28 L40 24 Z" fill="'+hair+'"/>';
+  else{backHair='<rect x="15" y="16" width="30" height="26" rx="10" fill="'+shade(hair,-18)+'"/>';hairS=cap;}
+  const hatS=hat?'<path d="M15 20 A15 15 0 0 1 45 20 L45 23 L15 23 Z" fill="'+hatCol+'"/><rect x="12" y="21" width="36" height="4.5" rx="2" fill="'+shade(hatCol,-24)+'"/>':"";
+  const gl=glasses?'<g stroke="#3a3a44" stroke-width="1.6" fill="rgba(255,255,255,.14)"><circle cx="24" cy="24" r="4.2"/><circle cx="36" cy="24" r="4.2"/><line x1="28.2" y1="24" x2="31.8" y2="24"/></g>':"";
+  return "<div class='person'><svg viewBox='0 0 60 92' xmlns='http://www.w3.org/2000/svg'>"+
+    '<ellipse cx="30" cy="89" rx="17" ry="3.5" fill="rgba(20,10,5,.3)"/>'+
+    "<g class='bodyG'>"+backHair+
+    '<g class="legL"><rect x="21.5" y="71" width="7" height="16" rx="3" fill="'+pants+'"/><rect x="20.5" y="85" width="9.5" height="5" rx="2.2" fill="#2b2b33"/></g>'+
+    '<g class="legR"><rect x="31.5" y="71" width="7" height="16" rx="3" fill="'+pants+'"/><rect x="30.5" y="85" width="9.5" height="5" rx="2.2" fill="#2b2b33"/></g>'+
+    '<path d="M17 45 Q30 38 43 45 L45.5 73 Q30 79 14.5 73 Z" fill="'+shirt+'"/>'+
+    '<path d="M25 43 L30 49 L35 43 Q30 40.5 25 43 Z" fill="'+shade(shirt,26)+'"/>'+
+    '<g class="armL"><rect x="9.5" y="46" width="6.5" height="20" rx="3" fill="'+shirtD+'"/><circle cx="12.8" cy="67" r="3.2" fill="'+skin+'"/></g>'+
+    '<g class="armR"><rect x="44" y="46" width="6.5" height="20" rx="3" fill="'+shirtD+'"/><circle cx="47.2" cy="67" r="3.2" fill="'+skin+'"/></g>'+
+    '<circle cx="30" cy="24" r="14" fill="'+skin+'"/>'+
+    '<circle cx="21.5" cy="29.5" r="2.4" fill="rgba(230,120,120,.4)"/>'+
+    '<circle cx="38.5" cy="29.5" r="2.4" fill="rgba(230,120,120,.4)"/>'+
+    '<circle class="eyeDot" cx="24" cy="24" r="1.9" fill="#2B1B12"/>'+
+    '<circle class="eyeDot" cx="36" cy="24" r="1.9" fill="#2B1B12"/>'+
+    '<path class="eyeHappy" d="M21.5 24.5 Q24 21.5 26.5 24.5" fill="none" stroke="#2B1B12" stroke-width="1.9" stroke-linecap="round"/>'+
+    '<path class="eyeHappy" d="M33.5 24.5 Q36 21.5 38.5 24.5" fill="none" stroke="#2B1B12" stroke-width="1.9" stroke-linecap="round"/>'+
+    '<line class="browL" x1="21" y1="19.5" x2="27" y2="21.5" stroke="#2B1B12" stroke-width="1.8" stroke-linecap="round"/>'+
+    '<line class="browR" x1="39" y1="19.5" x2="33" y2="21.5" stroke="#2B1B12" stroke-width="1.8" stroke-linecap="round"/>'+
+    '<path class="mouth" d="M27 31 Q30 33.5 33 31" fill="none" stroke="#2B1B12" stroke-width="1.7" stroke-linecap="round"/>'+
+    '<path class="mouthSad" d="M27 33 Q30 30.5 33 33" fill="none" stroke="#2B1B12" stroke-width="1.7" stroke-linecap="round"/>'+
+    hairS+hatS+gl+
+    "</g></svg></div>";}
+function posCust(el,x,y){el.style.left=(x/500*100)+"%";el.style.top=(y/340*100)+"%";}
+function vipState(id){if(!S.vip[id])S.vip[id]={met:false,visits:0,aff:0,lastDay:0,evDone:false};return S.vip[id];}
+function vipDef(id){return VIP.find(v=>v.id===id);}
+function vipAffStr(aff){const n=clamp(Math.floor(aff/20),0,5);return "❤️".repeat(n)+"🤍".repeat(5-n);}
+
+
+const VIP=[
+  {id:"office",name:"林小姐",fav:"latte",desc:"附近辦公室的企劃，午休時總是需要一杯漂亮拿鐵補血。",
+    skin:"#EFC5A5",hair:"#2B1B12",shirt:"#6f8fb0",pants:"#37474f",glasses:true,hat:false,
+    lines:{greet:"今天也麻煩你了，我想要那杯會讓下午變順的咖啡。",happy:"這杯好漂亮，等等開會我有勇氣了！",mad:"啊……我午休時間快沒了。",event:"我公司要辦小型分享會，可以請你準備咖啡嗎？",eventOk:"太好了！大家一定會喜歡這間店的味道。"}},
+  {id:"student",name:"阿哲",fav:"cake",desc:"在附近補習的學生，嘴上說要讀書，眼睛卻一直看蛋糕櫃。",
+    skin:"#F5D2B8",hair:"#3d4a63",shirt:"#5E7C6E",pants:"#3c3c48",glasses:false,hat:true,
+    lines:{greet:"老闆，我今天只吃一小片……真的。",happy:"這個蛋糕比考卷可愛多了。",mad:"嗚，蛋糕沒有了嗎？",event:"我們班想幫老師慶生，可以請你做幾份蛋糕嗎？",eventOk:"耶！老師一定會感動到多給五分。"}},
+  {id:"grandpa",name:"陳伯",fav:"pourD",desc:"住在巷尾的退休木工，喜歡慢慢喝一杯深焙手沖。",
+    skin:"#DDAA82",hair:"#555a60",shirt:"#8a5a34",pants:"#5a4632",glasses:false,hat:true,
+    lines:{greet:"今天的豆香不錯，讓我坐一下。",happy:"嗯，這味道有厚度。年輕人，很用心。",mad:"咖啡館啊，最重要的是穩。",event:"我家裡有幾塊好木料，想幫你做個小招牌。",eventOk:"明天我就把木頭搬來，店門口會更像樣。"}},
+  {id:"nurse",name:"小芸",fav:"pourL",desc:"夜班護理師，下班後會來一杯清爽淺焙，再摸摸門口的貓。",
+    skin:"#EFC5A5",hair:"#8f4a52",shirt:"#4f7f8f",pants:"#37474f",glasses:false,hat:false,
+    lines:{greet:"下班了，想喝一杯亮一點的手沖。",happy:"好香，今天終於放鬆下來了。",mad:"我真的快睡著了……",event:"醫院同事最近很累，我想買咖啡請大家，可以幫忙嗎？",eventOk:"謝謝你，大家會很開心的。"}}
+];
+const VIP_EVENT_REP=[
+  {id:"office",rep:8,money:80,msg:"公司分享會大受好評！人氣 +8、收入 +$80"},
+  {id:"student",rep:6,money:60,msg:"生日蛋糕被全班稱讚！人氣 +6、收入 +$60"},
+  {id:"grandpa",rep:5,money:0,msg:"陳伯替你做了手作木招牌，人氣 +5"},
+  {id:"nurse",rep:7,money:70,msg:"護理站團購咖啡，人氣 +7、收入 +$70"}
+];
+
+const EVENTS=[
+  {id:"blogger",icon:"📸",t:"美食部落客",d:"一位小有名氣的部落客推門進來，想採訪你的咖啡館。",a:[
+    {t:"熱情接待",run:()=>{S.rep+=10;return"報導大獲好評！人氣 +10 ⭐";}},
+    {t:"低調婉拒",run:()=>{S.money+=40;return"他還是默默外帶了兩杯。收入 +$40";}}]},
+  {id:"dealer",icon:"🧺",t:"豆商特賣",d:"熟識的豆商騎車經過，車上有一批品質不錯的熟豆，便宜賣你。",a:[
+    {t:"花 $50 收下",cond:()=>S.money>=50,run:()=>{S.money-=50;const k=pick(ROASTKEYS);
+      addBeans(k,5,ri(62,78));return"入庫 5 杯份的"+ROASTS[k].name+"豆！";}},
+    {t:"下次再說",run:()=>"豆商笑著揮揮手離開了。"}]},
+  {id:"gift",icon:"🎁",t:"常客的心意",d:"每天報到的常客提著袋子走進來：「給店裡的毛孩們吃的！」",a:[
+    {t:"收下心意",run:()=>{S.petFood+=2;return"獲得寵物飼料 ×2 🥫";}},
+    {t:"回請一杯",cond:()=>anyBeans(),run:()=>{S.petFood+=2;S.rep+=4;useAnyBean();
+      return"賓主盡歡！飼料 ×2、人氣 +4";}}]},
+  {id:"spill",icon:"💥",t:"打翻的托盤",d:"手一滑，整盤杯子摔在地上，碎了一地……",a:[
+    {t:"賠 $30 換新杯",cond:()=>S.money>=30,run:()=>{S.money-=30;return"換上新杯子，明天照常營業。";}},
+    {t:"先用舊杯撐著",run:()=>{S.rep=Math.max(0,S.rep-4);return"客人看見缺角的杯子皺了皺眉。人氣 -4";}}]},
+  {id:"rain",icon:"🌧",t:"綿綿細雨",d:"氣象說明天有雨。雨天路過的客人會少一些，但留下來的都想喝杯熱的。",a:[
+    {t:"多備點豆子吧",run:()=>{S.flags.rain=true;return"你在備忘錄記下：明天雨天。";}}]},
+  {id:"catparty",icon:"🐾",t:"巷口的騷動",d:"聽說巷口最近常有流浪的毛孩出沒，好像在等什麼人。",a:[
+    {t:"留一盞燈",run:()=>{S.flags.strayBoost=true;return"你把門口的燈留亮了一點。";}}]},
+];
+
+/* ================= 存檔 ================= */
+const SAVEKEY_PREFIX="cafe_slot_";
+const SLOT_COUNT=3;
+let SLOT=0; // 當前使用的欄位 (0~2)
+let S=null;
+function newState(){return{
+  day:1,money:160,rep:0,petFood:2,
+  beans:{light:{q:0,quality:0},medium:{q:0,quality:0},dark:{q:0,quality:0}},
+  cake:{q:0,quality:0},
+  up:{machine:0,seats:0,decor:0,sign:0,roaster:0},
+  pets:[],stray:{},stats:{served:0},flags:{},
+  skill:{roast:0,pour:0,latte:0,cake:0},tut:{},autoOn:false,
+  vip:{},   // id -> {met,visits,aff,lastDay,look}
+};}
+const AUTO_REQ={roast:5,pour:8,latte:8,cake:5};
+function autoUnlocked(k){return S.skill[k]>=AUTO_REQ[k];}
+function autoQ(k){return clamp(35+S.skill[k]*1.5+ri(-4,4),30,68);}
+let MEMSAVE=[null,null,null],STORE_OK=true;
+(function testStore(){try{localStorage.setItem("__t","1");localStorage.removeItem("__t");}catch(e){STORE_OK=false;}})();
+function slotKey(i){return SAVEKEY_PREFIX+i;}
+function save(){const j=JSON.stringify(S);MEMSAVE[SLOT]=j;
+  try{localStorage.setItem(slotKey(SLOT),j);}catch(e){STORE_OK=false;}}
+function migrate(o){
+  if(!o.skill)o.skill={roast:0,pour:0,latte:0,cake:0};
+  if(!o.tut)o.tut={};
+  if(o.autoOn===undefined)o.autoOn=false;
+  if(!o.cake)o.cake={q:0,quality:0};
+  if(!o.stray)o.stray={};
+  if(!o.pets)o.pets=[];
+  if(!o.flags)o.flags={};
+  if(!o.vip)o.vip={};
+  return o;}
+function loadSlot(i){
+  let s=null;
+  try{s=localStorage.getItem(slotKey(i));}catch(e){STORE_OK=false;}
+  if(!s)s=MEMSAVE[i];
+  if(!s)return null;
+  try{return migrate(JSON.parse(s));}catch(e){return null;}}
+function load(){return loadSlot(SLOT);}
+function saveToSlot(i,state){
+  const j=JSON.stringify(state);MEMSAVE[i]=j;
+  try{localStorage.setItem(slotKey(i),j);}catch(e){STORE_OK=false;}}
+function deleteSlot(i){
+  MEMSAVE[i]=null;
+  try{localStorage.removeItem(slotKey(i));}catch(e){}}
+/* --- 舊版遷移：把舊存檔搬到欄位 0 --- */
+(function migrateOld(){
+  try{
+    const old=localStorage.getItem("cafe_rpg_v3")||localStorage.getItem("cafe_rpg_v2");
+    if(old&&!localStorage.getItem(slotKey(0))){
+      localStorage.setItem(slotKey(0),old);MEMSAVE[0]=old;
+      localStorage.removeItem("cafe_rpg_v3");localStorage.removeItem("cafe_rpg_v2");}
+  }catch(e){}
+})();
+/* --- 存檔欄位 UI --- */
+let slotSel=0;
+function slotSummary(i){
+  const d=loadSlot(i);
+  if(!d)return null;
+  const pets=d.pets?d.pets.length:0;
+  return{day:d.day,money:d.money,rep:d.rep||0,pets};}
+function renderSlots(){
+  const grid=$("#slotGrid");grid.innerHTML="";
+  for(let i=0;i<SLOT_COUNT;i++){
+    const info=slotSummary(i);
+    const div=document.createElement("div");
+    div.className="slot"+(info?"":" empty")+(i===slotSel?" sel":"");
+    div.innerHTML="<div class='snum'>"+(i+1)+"</div>"+
+      (info?"<div class='sinfo'><div class='stitle'>Day "+info.day+"</div>"+
+        "<div class='sdetail'><span>$"+info.money+"</span><span>⭐ "+info.rep+"</span>"+
+        "<span>🐾 "+info.pets+"</span></div></div>"+
+        "<button class='sdel' data-i='"+i+"' title='刪除'>🗑</button>":
+        "<div class='sinfo'><div class='stitle' style='color:#8f6f5a'>— 空欄位 —</div></div>"
+      );
+    div.onclick=e=>{
+      if(e.target.classList.contains("sdel"))return;
+      slotSel=i;renderSlots();SFX.tap();};
+    grid.appendChild(div);}
+  $$("#slotGrid .sdel").forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const i=+b.dataset.i;
+    if(!confirm("確定刪除欄位 "+(i+1)+" 的存檔？"))return;
+    deleteSlot(i);SFX.sad();renderSlots();});
+  const hasData=!!slotSummary(slotSel);
+  $("#slotLoad").disabled=!hasData;
+  $("#slotSave").disabled=!S; // 要有遊戲中的 state 才能存
+}
+function openSlotOv(fromTitle){
+  slotSel=0;
+  // 自動選第一個有存檔的欄位
+  for(let i=0;i<SLOT_COUNT;i++){if(slotSummary(i)){slotSel=i;break;}}
+  renderSlots();
+  // 存入按鈕只在遊戲中（非標題）可用
+  $("#slotSave").classList.toggle("hidden",fromTitle&&!S);
+  $("#slotNew").classList.toggle("hidden",false);
+  $("#slotOv").classList.remove("hidden");}
+$("#slotClose").onclick=()=>{SFX.tap();$("#slotOv").classList.add("hidden");};
+$("#slotLoad").onclick=()=>{
+  const d=loadSlot(slotSel);
+  if(!d){toast("這個欄位是空的");SFX.bad();return;}
+  SLOT=slotSel;S=d;save();SFX.level();
+  $("#slotOv").classList.add("hidden");
+  renderMorning();show("scr-morning");
+  toast("讀取欄位 "+(SLOT+1)+"：Day "+S.day);};
+$("#slotSave").onclick=()=>{
+  if(!S){toast("還沒開始遊戲");SFX.bad();return;}
+  SLOT=slotSel;save();SFX.ding();renderSlots();
+  toast("已存入欄位 "+(SLOT+1));};
+$("#slotNew").onclick=()=>{
+  if(slotSummary(slotSel)&&!confirm("欄位 "+(slotSel+1)+" 已有存檔，要覆蓋嗎？"))return;
+  SLOT=slotSel;S=newState();save();SFX.level();
+  $("#slotOv").classList.add("hidden");
+  renderMorning();show("scr-morning");
+  toast("新咖啡館開張！（欄位 "+(SLOT+1)+"）");};
+/* --- 存檔代碼（進階） --- */
+function exportCode(){
+  const st=S||load()||newState();
+  return "LLCAFE1."+btoa(unescape(encodeURIComponent(JSON.stringify(st))));}
+function importCode(str){
+  try{
+    str=(str||"").trim();
+    if(!str.startsWith("LLCAFE1."))return null;
+    const o=JSON.parse(decodeURIComponent(escape(atob(str.slice(8)))));
+    if(typeof o.day!=="number"||!o.beans)return null;
+    return migrate(o);
+  }catch(e){return null;}}
+$("#slotCode").onclick=()=>{
+  SFX.tap();
+  if(S)$("#saveTxt").value=exportCode();
+  else{const d=loadSlot(slotSel);
+    if(d)$("#saveTxt").value="LLCAFE1."+btoa(unescape(encodeURIComponent(JSON.stringify(d))));
+    else $("#saveTxt").value="";}
+  $("#slotOv").classList.add("hidden");
+  $("#saveOv").classList.remove("hidden");};
+$("#saveClose").onclick=()=>{SFX.tap();$("#saveOv").classList.add("hidden");openSlotOv(false);};
+$("#saveCopy").onclick=()=>{
+  const t=$("#saveTxt");t.select();t.setSelectionRange(0,999999);
+  const done=()=>{toast("已複製存檔代碼！");SFX.ding();};
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(t.value).then(done,()=>{document.execCommand("copy");done();});
+  else{document.execCommand("copy");done();}};
+$("#saveImport").onclick=()=>{
+  const o=importCode($("#saveTxt").value);
+  if(!o){toast("代碼無效，請確認完整貼上");SFX.bad();return;}
+  SLOT=slotSel;S=o;save();SFX.level();
+  $("#saveOv").classList.add("hidden");
+  renderMorning();show("scr-morning");
+  toast("進度已匯入至欄位 "+(SLOT+1)+"！Day "+S.day);};
+
+function cats(){return S.pets.filter(p=>strayDef(p.id).kind==="cat").length;}
+function dogs(){return S.pets.filter(p=>strayDef(p.id).kind==="dog").length;}
+function strayDef(id){return STRAYS.find(s=>s.id===id);}
+function anyBeans(){return ROASTKEYS.some(k=>S.beans[k].q>0);}
+function anyStock(){return anyBeans()||S.cake.q>0;}
+function useAnyBean(){const k=ROASTKEYS.find(k2=>S.beans[k2].q>0);if(k)S.beans[k].q--;}
+function addBeans(k,qty,quality){const b=S.beans[k];const tot=b.q+qty;
+  b.quality=tot>0?Math.round((b.q*b.quality+qty*quality)/tot):0;b.q=tot;}
+function addCake(qty,quality){const b=S.cake;const tot=b.q+qty;
+  b.quality=tot>0?Math.round((b.q*b.quality+qty*quality)/tot):0;b.q=tot;}
+function qualityLabel(v){return v>=85?"極品":v>=70?"優質":v>=50?"不錯":"普通";}
+
+/* ================= 新手教學 ================= */
+const TUT={
+  roast:{icon:"🔥",title:"烘豆的流程",pages:[
+    "【入豆與升溫】生豆入鍋後，用「火力」控制升溫速率（RoR）。前段是<b>乾燥期</b>，豆子慢慢脫水、由綠轉黃。",
+    "【梅納反應】約 155°C 起進入<b>梅納反應</b>，香氣開始堆疊，豆色轉為褐色。左邊的「發展」條要在一爆後才會累積。",
+    "【一爆與發展期】約 190°C 豆子會<b>一爆</b>（啪啪聲）！之後是決定風味的<b>發展期</b>——把火力收小、穩住升溫。發展時間佔全程 <b>15～25%</b> 最理想。",
+    "【下豆】右側溫度計的<b>綠帶</b>就是目標烘焙度，抓準時機按「下豆」！超過 236°C 會燒焦、火力猛攻會發展不均。"]},
+  pour:{icon:"🫖",title:"手沖的流程",pages:[
+    "【水溫】先選注水溫度——<b>淺焙</b>要用高溫（約 93°C）才萃得出香氣；<b>深焙</b>要低一點（約 87°C）避免苦澀。",
+    "【悶蒸】正式注水前，先注入<b>少量</b>熱水潤濕咖啡粉，讓粉層排氣冒泡約 30 秒——這步叫悶蒸，做好風味才乾淨。",
+    "【時機】排氣結束的瞬間就是開始注水的最佳時機——太早味道悶、太晚香氣散。",
+    "【注水】穩定繞圈注水，<b>水柱保持均勻</b>，太大太小都會讓萃取失衡。完成一杯好咖啡！"]},
+  latte:{icon:"🥛",title:"拉花的流程",pages:[
+    "【打奶泡】先用蒸氣棒把牛奶打成綿密的奶泡——<b>奶泡量</b>要夠，但<b>奶溫</b>不能超過 65°C，過熱牛奶會失去甜感。",
+    "【手感】兩個條件都剛好的瞬間放開蒸氣，就是一壺完美的奶泡。",
+    "【拉花】按住杯面、從虛線起點<b>照著順序描</b>出愛心或葉子——亂塗沒有分！手要穩、奶量有限。奶泡打得好，圖案才立體！"]},
+  cake:{icon:"🍰",title:"做蛋糕的流程",pages:[
+    "【秤料】烘焙是精準的科學——<b>麵粉份量</b>要秤準，按住倒粉、填到綠區就放開。",
+    "【製作】接著攪拌麵糊、烘烤出爐、淋醬裝飾，每一步都要在<b>綠區</b>抓準時機按「停」。",
+    "【品質】總分越高蛋糕越好吃，客人小費越多。做壞了也會入庫……只是難吃而已。"]},
+};
+function tut(key){
+  if(S.tut[key])return Promise.resolve();
+  return new Promise(res=>{
+    const t=TUT[key];let pg=0;
+    $("#tutIcon").textContent=t.icon;
+    $("#tutTitle").textContent=t.title;
+    function render(){
+      $("#tutBody").innerHTML=t.pages[pg];
+      $("#tutDots").innerHTML=t.pages.map((_,i)=>i===pg?"<b>●</b>":"●").join("");
+      $("#tutNext").textContent=pg<t.pages.length-1?"下一步 →":"開始！";}
+    $("#tutNext").onclick=()=>{SFX.tap();
+      if(pg<t.pages.length-1){pg++;render();}
+      else{$("#tutOv").classList.add("hidden");S.tut[key]=true;save();res();}};
+    render();
+    $("#tutOv").classList.remove("hidden");
+  });
+}
+
+/* ================= 畫面切換 ================= */
+const SCREENS=["scr-title","scr-morning","scr-shop","scr-pets","scr-vips","scr-cafe"];
+function show(id){SCREENS.forEach(s=>$("#"+s).classList.toggle("hidden",s!==id));}
+
+/* ================= 早晨 ================= */
+const GREETS=["今天也要好好烘豆、好好招待客人。","陽光剛好，適合開一爐新豆。",
+  "巷口好像有小動物的腳印……","豆香會把客人帶進來的。","記得留一點飼料在口袋裡。"];
+function renderMorning(){
+  $("#hudDay").textContent="Day "+S.day;
+  $("#hudMoney").textContent="$"+S.money;
+  $("#hudRep").textContent="⭐ "+S.rep;
+  $("#hudFood").textContent="🥫 "+S.petFood;
+  $("#greet").textContent=S.flags.rain?"外頭下著雨，客人會少一點，記得備好熱飲。":pick(GREETS);
+  $("#petstrip").innerHTML=S.pets.map(p=>"<span>"+strayDef(p.id).emoji+"</span>").join("")||
+    '<span style="font-size:12px;color:#8f7a60">（還沒有毛孩夥伴）</span>';
+  const shelf=$("#beanshelf");shelf.innerHTML="";
+  ROASTKEYS.forEach(k=>{const b=S.beans[k],d=document.createElement("div");
+    d.className="beancard"+(b.q<=0?" empty":"");
+    d.innerHTML="<div class='bi'>"+ROASTS[k].icon+"</div><div class='bn'>"+ROASTS[k].name+"豆</div>"+
+      "<div class='bq'>"+(b.q>0?"×"+b.q:"缺貨")+"</div>"+
+      (b.q>0?"<div class='bql'>"+qualityLabel(b.quality)+" "+b.quality+"</div>":"");
+    shelf.appendChild(d);});
+  const c=S.cake,d=document.createElement("div");
+  d.className="beancard"+(c.q<=0?" empty":"");
+  d.innerHTML="<div class='bi'>🍰</div><div class='bn'>鮮莓蛋糕</div>"+
+    "<div class='bq'>"+(c.q>0?"×"+c.q+" 片":"缺貨")+"</div>"+
+    (c.q>0?"<div class='bql'>"+qualityLabel(c.quality)+" "+c.quality+"</div>":"");
+  shelf.appendChild(d);
+  renderSkillbox();
+}
+const SKILLNAME={roast:"🔥 烘豆",pour:"🫖 手沖",latte:"🥛 拉花",cake:"🍰 蛋糕"};
+function renderSkillbox(){
+  const box=$("#skillbox");box.innerHTML="";
+  Object.keys(SKILLNAME).forEach(k=>{
+    const v=S.skill[k],req=AUTO_REQ[k],ok=autoUnlocked(k);
+    const d=document.createElement("div");d.className="skillrow";
+    d.innerHTML="<b>"+SKILLNAME[k]+"</b>　"+
+      (ok?"<span class='auto-ok'>🤖 可自動</span>":"熟練 "+v+"/"+req)+
+      "<div class='sb'><i style='width:"+clamp(v/req*100,0,100)+"%'></i></div>";
+    box.appendChild(d);});
+  const anyProd=autoUnlocked("roast")||autoUnlocked("cake");
+  $("#autoRow").classList.toggle("hidden",!anyProd);
+  $("#btnRoastAuto").classList.toggle("hidden",!autoUnlocked("roast"));
+  $("#btnCakeAuto").classList.toggle("hidden",!autoUnlocked("cake"));
+}
+
+/* ================= 商店 ================= */
+function renderShop(){
+  $("#shopMoney").textContent="$"+S.money;
+  $("#shopFood").textContent="🥫 "+S.petFood;
+  const list=$("#shopList");list.innerHTML="";
+  Object.keys(UPG).forEach(k=>{const u=UPG[k],lv=S.up[k],max=u.cost.length;
+    const d=document.createElement("div");d.className="shopitem";
+    const lvStr="●".repeat(lv)+"○".repeat(max-lv);
+    let btn;
+    if(lv>=max){btn="<button class='buy maxed' disabled>已滿級</button>";}
+    else{const c=u.cost[lv];
+      btn="<button class='buy' data-k='"+k+"' "+(S.money<c?"disabled":"")+">$"+c+"</button>";}
+    d.innerHTML="<div class='ic'>"+u.icon+"</div><div class='info'><div class='nm'>"+u.name+
+      "</div><div class='ds'>"+u.desc(lv)+"</div><div class='lv'>"+lvStr+"</div></div>"+btn;
+    list.appendChild(d);});
+  const f=document.createElement("div");f.className="shopitem";
+  f.innerHTML="<div class='ic'>🥫</div><div class='info'><div class='nm'>寵物飼料</div>"+
+    "<div class='ds'>餵給路過的流浪毛孩，增加好感度</div><div class='lv'>持有 ×"+S.petFood+"</div></div>"+
+    "<button class='buy' data-k='food' "+(S.money<25?"disabled":"")+">$25</button>";
+  list.appendChild(f);
+  $$("#shopList .buy[data-k]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k;
+    if(k==="food"){if(S.money<25)return;S.money-=25;S.petFood++;SFX.coin();}
+    else{const u=UPG[k],lv=S.up[k];if(lv>=u.cost.length||S.money<u.cost[lv])return;
+      S.money-=u.cost[lv];S.up[k]++;SFX.level();toast(u.name+"升級！");}
+    save();renderShop();});
+}
+
+/* ================= 夥伴頁 ================= */
+function heartsStr(aff){const full=clamp(Math.floor(aff/20),0,5);
+  return "❤️".repeat(full)+"🤍".repeat(5-full);}
+function renderPets(){
+  const list=$("#petsList");list.innerHTML="";
+  const mk=html=>{const d=document.createElement("div");d.innerHTML=html;return d.firstElementChild;};
+  if(S.pets.length){
+    list.appendChild(mk("<div class='sect'>店裡的夥伴</div>"));
+    S.pets.forEach(p=>{const d=strayDef(p.id);
+      const bonus=d.kind==="cat"?"招財加成：小費 +12%":"看板加成：客人更常上門";
+      list.appendChild(mk("<div class='petcard'><div class='pe'>"+d.emoji+"</div><div>"+
+        "<div class='pn'>"+d.name+"</div><div class='pd'>"+d.desc+"</div>"+
+        "<div class='pd' style='color:#9fd9b8'>"+bonus+"</div></div></div>"));});
+  }
+  list.appendChild(mk("<div class='sect'>巷口圖鑑</div>"));
+  STRAYS.forEach(d=>{
+    if(S.pets.some(p=>p.id===d.id))return;
+    const st=S.stray[d.id];
+    if(st&&st.met){
+      const goneStr=st.gone?"<div class='pd' style='color:#d97f8b'>好像搬去別的地方了…</div>":"";
+      list.appendChild(mk("<div class='petcard'><div class='pe'>"+d.emoji+"</div><div>"+
+        "<div class='pn'>"+d.name+"</div><div class='pd'>"+d.desc+"</div>"+
+        "<div class='hearts'>"+heartsStr(st.aff)+"</div>"+goneStr+"</div></div>"));
+    }else{
+      list.appendChild(mk("<div class='petcard unknown'><div class='pe'>❔</div><div>"+
+        "<div class='pn'>？？？</div><div class='pd'>還沒遇過的"+KINDNAME[d.kind]+"</div></div></div>"));
+    }});
+}
+
+/* ================= 烘豆小遊戲 ================= */
+const rocv=$("#rocv"),rctx=rocv.getContext("2d");let RW=0,RH=0,RDPR=1,roRaf=null;
+function roFit(){RDPR=Math.min(2,window.devicePixelRatio||1);const r=rocv.getBoundingClientRect();
+  RW=r.width;RH=Math.round(r.width*0.72);rocv.style.height=RH+"px";
+  rocv.width=RW*RDPR;rocv.height=RH*RDPR;rctx.setTransform(RDPR,0,0,RDPR,0,0);}
+window.addEventListener("resize",()=>{if(!$("#roastOv").classList.contains("hidden"))roFit();});
+function band(v,c,h,pen){pen=pen||22;const d=Math.abs(v-c);
+  return d<=h?100-(d/h)*pen:Math.max(0,100-pen-(d-h)*1.3);}
+function rrect(x,y,w,h,r){const c=rctx;c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);
+  c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+const ROASTWIN={light:{c:200,h:6},medium:{c:214,h:7},dark:{c:228,h:6}};
+const T1=190,T2=220,BURNT=236;
+const STOPS=[[130,[138,168,106]],[165,[201,177,95]],[190,[176,123,69]],[210,[122,74,40]],[226,[69,41,26]],[238,[37,22,13]]];
+function beanColor(t){if(t<=STOPS[0][0])return"rgb("+STOPS[0][1].join(",")+")";
+  if(t>=STOPS[STOPS.length-1][0])return"rgb("+STOPS[STOPS.length-1][1].join(",")+")";
+  let a=STOPS[0],b=STOPS[STOPS.length-1];
+  for(let i=0;i<STOPS.length-1;i++){if(t>=STOPS[i][0]&&t<=STOPS[i+1][0]){a=STOPS[i];b=STOPS[i+1];break;}}
+  const f=(t-a[0])/(b[0]-a[0]),col=a[1].map((v,i)=>Math.round(v+(b[1][i]-v)*f));
+  return"rgb("+col.join(",")+")";}
+function stageLabel(t){if(t<155)return"乾燥期";if(t<T1)return"梅納反應（轉黃→褐）";
+  if(t<208)return"一爆中";if(t<T2)return"發展期";if(t<BURNT)return"二爆中";return"接近燒焦！";}
+
+function playRoast(tgt){return new Promise(resolve=>{
+  const tg=ROASTWIN[tgt];
+  let temp=135,dev=0,done=false,last=performance.now(),tSec=0,fcT=null;
+  let beans=[],pops=[],smoke=[],everBurnt=false,scorchFlash=0,ror=0;
+  for(let i=0;i<16;i++)beans.push({a:Math.random()*TAU,r:0.2+Math.random()*0.75,
+    sp:0.4+Math.random()*0.9,sz:0.9+Math.random()*0.5});
+  $("#roCtrl").classList.remove("hidden");$("#roResult").classList.add("hidden");
+  $("#roHeat").value=58;
+  $("#roTitle").textContent="🔥 烘豆："+ROASTS[tgt].name;
+  function getHeat(){return +$("#roHeat").value;}
+  $("#roDrop").onclick=()=>{if(!done)finish();};
+  function finish(){done=true;
+    const roastAcc=band(temp,tg.c,tg.h,24);
+    const devS=clamp(dev,0,100);
+    const burnt=temp>BURNT||everBurnt;
+    const dtr=fcT!==null?(tSec-fcT)/Math.max(0.1,tSec)*100:0;
+    let dtrS=0;
+    if(fcT!==null){const d=Math.abs(dtr-20);
+      dtrS=d<=5?100-(d/5)*15:Math.max(0,80-(d-5)*4.5);}
+    let total=roastAcc*0.5+devS*0.3+dtrS*0.2;
+    if(burnt)total=Math.min(total,24);
+    total=Math.round(clamp(total,0,100));
+    if(roRaf)cancelAnimationFrame(roRaf);
+    setTimeout(()=>resolve({total,roast:Math.round(roastAcc),dev:Math.round(devS),
+      dtr:Math.round(dtr),dtrS:Math.round(dtrS),temp:Math.round(temp),burnt}),380);}
+  function loop(now){const dt=Math.min(50,now-last)/1000;last=now;
+    if(!done){const heat=getHeat();
+      tSec+=dt;
+      ror=heat*0.16-1.6;
+      temp=clamp(temp+ror*dt,120,260);
+      if(temp>=T1&&fcT===null)fcT=tSec;
+      if(temp>BURNT)everBurnt=true;
+      if(temp>=T1){
+        if(ror>10.5){dev=Math.max(0,dev-18*dt);scorchFlash=Math.min(1,scorchFlash+dt*3);}
+        else if(ror>=2.5){dev=Math.min(100,dev+22*dt);scorchFlash=Math.max(0,scorchFlash-dt*2);}
+        else scorchFlash=Math.max(0,scorchFlash-dt*2);}
+      if(temp>=BURNT+10)finish();
+      const cracking=(temp>=T1&&temp<208)||(temp>=T2&&temp<BURNT);
+      if(cracking&&Math.random()<0.5){pops.push({x:RW*0.5+(Math.random()-.5)*RW*0.26,
+        y:RH*0.46+(Math.random()-.5)*RH*0.3,a:1,v:30+Math.random()*40});
+        if(Math.random()<0.2)SFX.pop();}
+      const smk=clamp((temp-175)/65,0,1);
+      if(Math.random()<smk*0.7)smoke.push({x:RW*0.5+(Math.random()-.5)*70,y:RH*0.18,a:.5,v:18+Math.random()*16});}
+    pops.forEach(p=>{p.y-=p.v*dt;p.a-=dt*1.6;});pops=pops.filter(p=>p.a>0);
+    smoke.forEach(s=>{s.y-=s.v*dt;s.a-=dt*0.4;});smoke=smoke.filter(s=>s.a>0);
+    draw(now,dt);roRaf=requestAnimationFrame(loop);}
+  function draw(now,dt){const ctx=rctx;ctx.clearRect(0,0,RW,RH);
+    const cx=RW*0.46,cy=RH*0.46,R=Math.min(RW,RH)*0.30;
+    ctx.textAlign="center";ctx.fillStyle="#e9d9c0";ctx.font="700 14px 'Noto Sans TC'";
+    ctx.fillText("目標："+ROASTS[tgt].name+"　·　"+stageLabel(temp),cx,22);
+    const mm=Math.floor(tSec/60),ss=("0"+Math.floor(tSec%60)).slice(-2);
+    const dtrNow=fcT!==null?Math.round((tSec-fcT)/Math.max(0.1,tSec)*100):0;
+    ctx.fillStyle="#cdb79a";ctx.font="700 12px 'Noto Sans TC'";
+    ctx.fillText("時間 "+mm+":"+ss+(fcT!==null?"　·　發展時間比 "+dtrNow+"%（理想 15~25%）":""),cx,40);
+    smoke.forEach(s=>{ctx.fillStyle="rgba(220,210,200,"+s.a+")";ctx.beginPath();
+      ctx.arc(s.x,s.y,6+(0.5-s.a)*16,0,TAU);ctx.fill();});
+    ctx.fillStyle="#2a1d14";ctx.beginPath();ctx.arc(cx,cy,R+18,0,TAU);ctx.fill();
+    ctx.strokeStyle="#52392a";ctx.lineWidth=6;ctx.beginPath();ctx.arc(cx,cy,R+15,0,TAU);ctx.stroke();
+    const glow=clamp((temp-150)/100,0,1);
+    ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.clip();
+    ctx.fillStyle="rgb("+(30+glow*70|0)+","+(18+glow*8|0)+",10)";ctx.fillRect(cx-R,cy-R,R*2,R*2);
+    const bc=beanColor(temp),oil=temp>222?clamp((temp-222)/16,0,.5):0;
+    beans.forEach(b=>{b.a+=b.sp*dt*1.4;
+      const x=cx+Math.cos(b.a)*R*b.r*0.92,y=cy+Math.sin(b.a*1.1)*R*b.r*0.62+Math.sin(now/300+b.a)*3;
+      ctx.save();ctx.translate(x,y);ctx.rotate(b.a);
+      ctx.fillStyle=bc;ctx.beginPath();ctx.ellipse(0,0,7.5*b.sz,5*b.sz,0,0,TAU);ctx.fill();
+      ctx.strokeStyle="rgba(20,10,5,.5)";ctx.lineWidth=1;ctx.beginPath();
+      ctx.moveTo(-5*b.sz,0);ctx.lineTo(5*b.sz,0);ctx.stroke();
+      if(oil>0){ctx.fillStyle="rgba(255,240,210,"+oil+")";ctx.beginPath();
+        ctx.ellipse(-1.5*b.sz,-1.2*b.sz,2*b.sz,1.2*b.sz,0,0,TAU);ctx.fill();}
+      ctx.restore();});
+    pops.forEach(p=>{ctx.fillStyle="rgba(255,"+(180+Math.random()*60|0)+",90,"+p.a+")";
+      ctx.beginPath();ctx.arc(p.x,p.y,2.5,0,TAU);ctx.fill();});
+    ctx.restore();
+    if(temp>=T1&&temp<208){ctx.fillStyle="#ffd27a";ctx.font="800 18px 'Baloo 2'";ctx.fillText("一爆！",cx,cy+R+38);}
+    else if(temp>=T2&&temp<BURNT){ctx.fillStyle="#ff9a6a";ctx.font="800 18px 'Baloo 2'";ctx.fillText("二爆！",cx,cy+R+38);}
+    if(scorchFlash>0.05){ctx.fillStyle="rgba(196,93,106,"+scorchFlash+")";
+      ctx.font="800 16px 'Baloo 2'";ctx.fillText("火力過猛！發展不均",cx,cy+R+58);}
+    const gx=RW-30,gTop=40,gH=RH-78,lo=120,hi=245,yOf=v=>gTop+gH-(v-lo)/(hi-lo)*gH;
+    ctx.fillStyle="rgba(255,255,255,.06)";rrect(gx-15,gTop-6,30,gH+12,10);ctx.fill();
+    ctx.fillStyle="rgba(159,217,184,.5)";
+    ctx.fillRect(gx-15,yOf(tg.c+tg.h),30,yOf(tg.c-tg.h)-yOf(tg.c+tg.h));
+    ctx.fillStyle="#9fd9b8";ctx.fillRect(gx-15,yOf(tg.c)-1,30,2);
+    [[T1,"#e0a85a"],[T2,"#d98a5a"],[BURNT,"#c45d6a"]].forEach(m=>{
+      ctx.strokeStyle=m[1];ctx.lineWidth=1.4;ctx.setLineDash([3,3]);ctx.beginPath();
+      ctx.moveTo(gx-15,yOf(m[0]));ctx.lineTo(gx+15,yOf(m[0]));ctx.stroke();ctx.setLineDash([]);});
+    const yt=yOf(clamp(temp,lo,hi));ctx.fillStyle=temp>BURNT?"#c45d6a":"#ffd9a3";
+    ctx.beginPath();ctx.moveTo(gx-22,yt);ctx.lineTo(gx-15,yt-6);ctx.lineTo(gx-15,yt+6);ctx.fill();
+    ctx.fillStyle="#f4ecdd";ctx.font="700 13px 'Baloo 2'";ctx.textAlign="center";
+    ctx.fillText(Math.round(temp)+"°",gx,gTop-12);
+    const dx=22,dTop=40,dH=RH-78;
+    ctx.fillStyle="#cdb79a";ctx.font="700 11px 'Noto Sans TC'";ctx.fillText("發展",dx,dTop-14);
+    ctx.fillStyle="rgba(255,255,255,.06)";rrect(dx-11,dTop,22,dH,8);ctx.fill();
+    const dv=clamp(dev,0,100),dy=dTop+dH-dv/100*dH;
+    ctx.fillStyle="#C68A3E";ctx.fillRect(dx-11,dy,22,dTop+dH-dy);}
+  roFit();
+  roRaf=requestAnimationFrame(loop);
+});}
+
+function setStars(el,n){el.textContent="★★★★★☆☆☆☆☆".slice(5-n,10-n);}
+
+async function doRoast(tgt){
+  $("#pickOv").classList.add("hidden");
+  await tut("roast");
+  S.money-=ROAST_COST;renderMorning();
+  $("#roastOv").classList.remove("hidden");
+  roFit();
+  const r=await playRoast(tgt);
+  const batch=6+S.up.roaster*3;
+  const gain=r.burnt?2:batch;
+  const q=r.burnt?25:r.total;
+  const stars=r.total>=90?5:r.total>=75?4:r.total>=58?3:r.total>=40?2:1;
+  $("#roCtrl").classList.add("hidden");
+  $("#roResult").classList.remove("hidden");
+  $("#roScore").textContent=r.total;
+  setStars($("#roStars"),stars);
+  $("#roAcc").textContent=r.roast;
+  $("#roDev").textContent=r.dev;
+  $("#roDtr").textContent=r.dtr+"%";
+  $("#roTemp").innerHTML=r.temp+"°C"+(r.burnt?' <span class="burnt">燒焦</span>':"");
+  $("#roYield").textContent=ROASTS[tgt].name+"豆 ×"+gain+" 杯份";
+  if(r.burnt)SFX.sad();else if(stars>=4)SFX.level();else SFX.ding();
+  $("#roTake").onclick=()=>{
+    addBeans(tgt,gain,q);
+    S.skill.roast++;
+    $("#roastOv").classList.add("hidden");
+    save();renderMorning();
+    toast(r.burnt?"搶救出 "+gain+" 杯份…下次小心火力":"入庫 "+ROASTS[tgt].name+"豆 ×"+gain);
+  };
+}
+function openPick(autoMode){
+  if(S.money<ROAST_COST){toast("錢不夠買生豆（$"+ROAST_COST+"）");SFX.bad();return;}
+  const list=$("#pickList");list.innerHTML="";
+  ROASTKEYS.forEach(k=>{const b=document.createElement("button");
+    b.className="btn ghost mini";b.style.marginBottom="8px";
+    b.innerHTML=(autoMode?"🤖 ":"")+ROASTS[k].icon+" "+ROASTS[k].name+"　<small style='color:#9fd9b8'>庫存 ×"+S.beans[k].q+"</small>";
+    b.onclick=()=>{SFX.tap();
+      if(autoMode){
+        $("#pickOv").classList.add("hidden");
+        S.money-=ROAST_COST;
+        const batch=6+S.up.roaster*3,q=autoQ("roast");
+        addBeans(k,batch,q);
+        SFX.coin();save();renderMorning();
+        toast("🤖 機器烘豆 "+ROASTS[k].name+" ×"+batch+"（品質 "+q+"）");
+      }else doRoast(k);};
+    list.appendChild(b);});
+  $("#pickOv").classList.remove("hidden");
+}
+
+/* ================= 蛋糕小遊戲（秤料→攪拌→烘烤→淋醬） ================= */
+const CAKE_STEPS=[
+  {type:"fill",icon:"⚖️",label:"秤麵粉：按住倒粉，填到綠區放開！",zc:65,zw:14,rate:52},
+  {type:"mark",icon:"🥣",label:"攪拌麵糊：在綠區按「停」！",w:24,sp:92},
+  {type:"mark",icon:"🔥",label:"烘烤出爐：抓準出爐時機！",w:18,sp:112},
+  {type:"mark",icon:"🍓",label:"淋醬裝飾：手要穩！",w:13,sp:132},
+];
+function playCake(){return new Promise(resolve=>{
+  const ov=$("#cakeOv");ov.classList.remove("hidden");
+  $("#cakeResult").classList.add("hidden");
+  $$("#cakeSteps span").forEach(s=>s.className="");
+  let step=0,pos=0,dir=1,fill=0,holding=false,scores=[],raf=null,last=performance.now(),locked=false;
+  const mark=$("#cakeMark"),fillEl=$("#cakeFill"),zone=$("#cakeZone");
+  const holdBtn=$("#cakeHold"),stopBtn=$("#cakeStop");
+  function setup(){
+    const st=CAKE_STEPS[step];
+    $$("#cakeSteps span").forEach((s,i)=>{s.classList.toggle("on",i===step);if(i<step)s.classList.add("ok");});
+    $("#cakeLabel").textContent=st.label;
+    locked=false;
+    if(st.type==="fill"){
+      fill=0;holding=false;
+      fillEl.style.width="0%";fillEl.classList.remove("hidden");
+      mark.style.display="none";
+      zone.style.left=(st.zc-st.zw/2)+"%";zone.style.width=st.zw+"%";
+      holdBtn.classList.remove("hidden");stopBtn.classList.add("hidden");
+    }else{
+      st.center=rnd(28,72);
+      fillEl.classList.add("hidden");mark.style.display="";
+      zone.style.left=(st.center-st.w/2)+"%";zone.style.width=st.w+"%";
+      pos=ri(0,1)?4:96;dir=pos<50?1:-1;
+      holdBtn.classList.add("hidden");stopBtn.classList.remove("hidden");
+    }}
+  function stepDone(s){
+    scores.push(s);locked=true;
+    (s>=80?SFX.ding:s>=50?SFX.tap:SFX.bad)();
+    $("#cakeLabel").textContent=s>=80?"漂亮！+"+s:s>=50?"還行 +"+s:"歪掉了… +"+s;
+    setTimeout(()=>{
+      step++;
+      if(step<CAKE_STEPS.length){setup();}
+      else{
+        cancelAnimationFrame(raf);
+        const total=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+        const stars=total>=90?5:total>=75?4:total>=58?3:total>=40?2:1;
+        holdBtn.classList.add("hidden");stopBtn.classList.add("hidden");
+        $("#cakeResult").classList.remove("hidden");
+        $("#cakeScore").textContent=total;
+        setStars($("#cakeStars"),stars);
+        $("#cakeYield").textContent="鮮莓蛋糕 ×"+CAKE_YIELD+" 片";
+        (stars>=4?SFX.level:SFX.ding)();
+        $("#cakeTake").onclick=()=>{
+          addCake(CAKE_YIELD,total);
+          S.skill.cake++;
+          ov.classList.add("hidden");
+          save();renderMorning();
+          toast("入庫 鮮莓蛋糕 ×"+CAKE_YIELD);
+          resolve(total);};
+      }},650);}
+  function loop(now){const dt=Math.min(50,now-last)/1000;last=now;
+    const st=CAKE_STEPS[step];
+    if(!locked&&st){
+      if(st.type==="fill"){
+        if(holding){fill=clamp(fill+st.rate*dt,0,100);
+          fillEl.style.width=fill+"%";
+          if(fill>=100){holding=false;lockFill();}}
+      }else{
+        pos+=dir*st.sp*dt;
+        if(pos>=98){pos=98;dir=-1;}if(pos<=2){pos=2;dir=1;}
+        mark.style.left="calc("+pos+"% - 3px)";}}
+    raf=requestAnimationFrame(loop);}
+  function lockFill(){
+    if(locked)return;
+    const st=CAKE_STEPS[step];
+    const d=Math.abs(fill-st.zc),h=st.zw/2;
+    const s=d<=h?Math.round(100-d/h*15):Math.round(Math.max(0,80-(d-h)*4));
+    stepDone(s);}
+  holdBtn.onpointerdown=e=>{e.preventDefault();if(!locked)holding=true;};
+  const hUp=()=>{if(holding){holding=false;if(fill>=5)lockFill();}};
+  holdBtn.onpointerup=hUp;holdBtn.onpointercancel=hUp;holdBtn.onpointerleave=hUp;
+  stopBtn.onclick=()=>{
+    if(locked)return;
+    const st=CAKE_STEPS[step];
+    const d=Math.abs(pos-st.center),h=st.w/2;
+    const s=d<=h?Math.round(100-d/h*15):Math.round(Math.max(0,82-(d-h)*3.2));
+    stepDone(s);};
+  setup();
+  raf=requestAnimationFrame(loop);
+});}
+
+/* ================= 手沖小遊戲（手沖壺：水溫→悶蒸→注水） ================= */
+const POUR_TEMP={light:{c:93,h:2},dark:{c:87,h:2},medium:{c:90,h:2}};
+function tScore(v,c,h,inPen,outFall){const d=Math.abs(v-c);
+  return d<=h?100-(d/h)*inPen:Math.max(0,(100-inPen)-(d-h)*outFall);}
+/* --- 壺具場景控制 --- */
+const PS={holding:false,_wired:false};
+function psWire(){
+  if(PS._wired)return;PS._wired=true;
+  const sc=$("#pourScene");
+  sc.addEventListener("pointerdown",e=>{e.preventDefault();PS.holding=true;});
+  const up=()=>{PS.holding=false;};
+  sc.addEventListener("pointerup",up);sc.addEventListener("pointercancel",up);sc.addEventListener("pointerleave",up);
+}
+function psGaugeY(v){return 164-(v/100)*126;}
+function psLevel(l){
+  document.querySelector("#kettleG").setAttribute("transform","rotate("+(-10+l*0.4)+",150,62)");
+  const w=l>30?((l-30)/70)*6.5+1.5:0;
+  document.querySelector("#streamP").setAttribute("stroke-width",w.toFixed(2));
+  document.querySelector("#gNeedle").setAttribute("y",psGaugeY(l)-2);
+}
+function psZone(lo,hi){
+  const z=document.querySelector("#gZone");
+  z.setAttribute("y",psGaugeY(hi));
+  z.setAttribute("height",psGaugeY(lo)-psGaugeY(hi));
+}
+function psGaugeShow(b){document.querySelector("#flowGauge").style.opacity=b?1:0.22;}
+function psBed(w){ // w:0~1 濕潤度
+  const a=[138,100,64],bcol=[64,42,20];
+  const c=a.map((v,i)=>Math.round(v+(bcol[i]-v)*clamp(w,0,1)));
+  document.querySelector("#bedE").setAttribute("fill","rgb("+c.join(",")+")");
+}
+function psCarafe(p){ // p:0~100
+  const h=p/100*40;
+  const r=document.querySelector("#carafeFill");
+  r.setAttribute("y",181-h);r.setAttribute("height",h);
+  document.querySelector("#extPct").textContent=Math.round(p);
+}
+function psTip(t){document.querySelector("#pourTip").textContent=t||"";}
+function playPour(menuName,bean){return new Promise(resolve=>{
+  const ov=$("#pourOv");ov.classList.remove("hidden");
+  psWire();
+  $("#pourTitle").textContent="🫖 "+menuName;
+  $("#pourHint").textContent="　";
+  $("#pourPh0").classList.remove("hidden");
+  $("#pourPh1").classList.add("hidden");
+  $("#pourPh2").classList.add("hidden");
+  $("#pourScene").classList.add("hidden");
+  let tempScore=0,bloomScore=0,bubbles=[];
+  psLevel(0);psBed(0);psCarafe(0);
+  document.querySelector("#bubblesG").innerHTML="";
+  /* --- 階段0：水溫 --- */
+  const slider=$("#pourTemp");slider.value=90;
+  $("#pourTempV").textContent="90";
+  slider.oninput=()=>{$("#pourTempV").textContent=slider.value;};
+  $("#pourTempOk").onclick=()=>{SFX.tap();
+    const t=POUR_TEMP[bean]||POUR_TEMP.medium;
+    tempScore=Math.round(tScore(+slider.value,t.c,t.h,18,9));
+    $("#pourPh0").classList.add("hidden");
+    startBloom();};
+  /* --- 階段1：悶蒸 --- */
+  function startBloom(){
+    $("#pourScene").classList.remove("hidden");
+    $("#pourPh1").classList.remove("hidden");
+    psGaugeShow(false);psTip("👆 按住畫面傾壺注水");
+    const zc=37.5,zh=7.5;
+    $("#bloomZone").style.left=(zc-zh)+"%";$("#bloomZone").style.width=(zh*2)+"%";
+    $("#bloomTZone").style.left="66%";$("#bloomTZone").style.width="24%";
+    $("#bloomFill").style.width="0%";$("#bloomFillV").textContent="0%";
+    $("#bloomTMark").style.left="0%";$("#bloomState").textContent="💤";
+    $("#bloomGoBtn").classList.add("hidden");
+    let level=0,fill=0,fillDone=false,tPos=0,raf=null,last=performance.now(),fillScore=0;
+    const NS="http://www.w3.org/2000/svg";
+    function lockFill(){fillDone=true;
+      fillScore=Math.round(tScore(fill,zc,zh,15,5));
+      $("#bloomState").textContent="💨 冒泡排氣中…";
+      psTip("等排氣，抓準時機！");
+      $("#bloomGoBtn").classList.remove("hidden");
+      SFX.splash();}
+    $("#bloomGoBtn").onclick=()=>{
+      const timeScore=Math.round(tScore(tPos,78,12,15,4));
+      bloomScore=Math.round(fillScore*0.5+timeScore*0.5);
+      (timeScore>=70?SFX.ding:SFX.tap)();
+      cancelAnimationFrame(raf);
+      $("#pourPh1").classList.add("hidden");
+      startPour();};
+    function loop(now){const dt=Math.min(50,now-last)/1000;last=now;
+      if(!fillDone){
+        level=clamp(level+(PS.holding?86:-90)*dt,0,100);
+        psLevel(level);
+        if(level>30)fill=clamp(fill+((level-30)/70)*80*dt,0,100);
+        psBed(fill/48);
+        $("#bloomFill").style.width=fill+"%";
+        $("#bloomFillV").textContent=Math.round(fill)+"%";
+        if(!PS.holding&&fill>=5&&level<6)lockFill();
+        if(fill>=100){PS.holding=false;lockFill();}
+      }else{
+        level=clamp(level-90*dt,0,100);psLevel(level);
+        tPos=clamp(tPos+100/3.6*dt,0,100);
+        $("#bloomTMark").style.left="calc("+tPos+"% - 3px)";
+        // 排氣泡泡
+        if(Math.random()<0.35){
+          const c=document.createElementNS(NS,"circle");
+          c.setAttribute("cx",121+rnd(-20,20));c.setAttribute("cy",105);
+          c.setAttribute("r",rnd(1.5,3));c.setAttribute("fill","#e8d5b8");
+          document.querySelector("#bubblesG").appendChild(c);
+          bubbles.push({el:c,y:105,a:0.9});}
+        bubbles.forEach(bb=>{bb.y-=14*dt;bb.a-=dt*0.9;
+          bb.el.setAttribute("cy",bb.y);bb.el.setAttribute("opacity",Math.max(0,bb.a));});
+        bubbles=bubbles.filter(bb=>{if(bb.a<=0){bb.el.remove();return false;}return true;});
+        if(tPos>=100){
+          bloomScore=Math.round(fillScore*0.5+15);
+          $("#pourHint").textContent="悶蒸過頭了…💦";
+          SFX.sad();
+          cancelAnimationFrame(raf);
+          $("#pourPh1").classList.add("hidden");
+          startPour();return;}}
+      raf=requestAnimationFrame(loop);}
+    raf=requestAnimationFrame(loop);}
+  /* --- 階段2：注水 --- */
+  function startPour(){
+    $("#pourPh2").classList.remove("hidden");
+    document.querySelector("#bubblesG").innerHTML="";
+    psGaugeShow(true);psZone(44,72);psTip("👆 按住傾壺，水柱進綠區");
+    const total=pourTime();
+    const zoneLo=44,zoneHi=72;
+    let level=0,prog=0,pourT=0,inBandT=0,over=0,done=false,raf=null,last=performance.now();
+    function loop(now){const dt=Math.min(50,now-last)/1000;last=now;
+      level=clamp(level+(PS.holding?86:-70)*dt,0,100);
+      psLevel(level);
+      const pouring=level>25;
+      if(pouring){pourT+=dt;
+        if(level>=zoneLo&&level<=zoneHi)inBandT+=dt;
+        if(level>=99)over+=dt;
+        prog=clamp(prog+dt/total*100,0,100);
+      }else prog=clamp(prog+dt/total*10,0,100);
+      psBed(0.7+level/100*0.3);
+      psCarafe(prog);
+      if(prog>=100&&!done){done=true;
+        cancelAnimationFrame(raf);
+        const segScore=Math.round(clamp(inBandT/Math.max(0.001,pourT)*100-over*28,0,100));
+        const score=Math.round(tempScore*0.25+bloomScore*0.35+segScore*0.4);
+        $("#pourHint").textContent=(score>=80?"教科書級的一杯！✨":score>=55?"穩穩的一杯 ☕":"風味跑掉了…💦")+
+          "（水溫 "+tempScore+"・悶蒸 "+bloomScore+"・注水 "+segScore+"）";
+        psTip("");
+        (score>=55?SFX.ding:SFX.sad)();
+        setTimeout(()=>{ov.classList.add("hidden");resolve(score);},900);
+        return;}
+      raf=requestAnimationFrame(loop);}
+    raf=requestAnimationFrame(loop);}
+});}
+
+/* ================= 拉花小遊戲（蒸氣棒打奶泡→手描拉花） ================= */
+function playLatte(){return new Promise(resolve=>{
+  const ov=$("#latteOv");ov.classList.remove("hidden");
+  $("#latteHint").textContent="　";
+  $("#lattePh0").classList.remove("hidden");
+  $("#lattePh1").classList.add("hidden");
+  let steamScore=0;
+  /* --- 階段0：蒸氣棒打奶泡 --- */
+  (function steam(){
+    const fLo=55,fHi=Math.min(94,82+S.up.machine*4);
+    const tLo=55,tHi=65;
+    $("#foamZone").style.bottom=fLo+"%";$("#foamZone").style.height=(fHi-fLo)+"%";
+    $("#mtempZone").style.bottom=((tLo-20)/60*100)+"%";
+    $("#mtempZone").style.height=((tHi-tLo)/60*100)+"%";
+    $("#foamNeedle").style.bottom="0%";$("#mtempNeedle").style.bottom="0%";
+    $("#mtempV").textContent="20";
+    const disp=document.querySelector("#mtempDisp");
+    disp.textContent="20°";disp.setAttribute("fill","#9FD9B8");
+    const milkR=document.querySelector("#milkR"),foamR=document.querySelector("#foamR");
+    milkR.setAttribute("y",150-16);milkR.setAttribute("height",16);
+    foamR.setAttribute("y",150-16);foamR.setAttribute("height",0);
+    document.querySelector("#steamTip").textContent="👆 按住奶壺打奶泡";
+    const scene=$("#steamScene");
+    let foam=0,mt=20,holding=false,done=false,raf=null,last=performance.now(),puffT=0;
+    const dn=e=>{e.preventDefault();if(!done){holding=true;SFX.splash();}};
+    const up=()=>{if(holding){holding=false;if(foam>=15)lock();}};
+    scene.onpointerdown=dn;scene.onpointerup=up;scene.onpointercancel=up;scene.onpointerleave=up;
+    function puff(){
+      const p=document.createElement("div");p.className="steampuff";
+      const r=scene.getBoundingClientRect();
+      p.style.width=p.style.height=rnd(8,16)+"px";
+      p.style.left=(0.76*r.width+rnd(-8,10))+"px";
+      p.style.top=(0.52*r.height+rnd(-6,6))+"px";
+      scene.appendChild(p);
+      setTimeout(()=>p.remove(),820);}
+    function lock(){done=true;cancelAnimationFrame(raf);
+      scene.onpointerdown=null;
+      const fc=(fLo+fHi)/2,fh=(fHi-fLo)/2;
+      let fS=Math.round(tScore(foam,fc,fh,12,3));
+      let tS=Math.round(tScore(mt,60,5,12,7));
+      let burntMsg=false;
+      if(mt>75){tS=Math.min(tS,10);burntMsg=true;}
+      steamScore=Math.round((fS+tS)/2);
+      $("#latteHint").textContent=burntMsg?"牛奶燒焦了！🥵（奶泡 "+steamScore+"）":
+        steamScore>=80?"綿密的完美奶泡！（"+steamScore+"）":
+        steamScore>=55?"不錯的奶泡（"+steamScore+"）":"奶泡有點粗…（"+steamScore+"）";
+      (steamScore>=55?SFX.ding:SFX.sad)();
+      setTimeout(()=>{$("#lattePh0").classList.add("hidden");traceArt();},750);}
+    function loop(now){const dt=Math.min(50,now-last)/1000;last=now;
+      if(holding&&!done){
+        foam=clamp(foam+26*dt,0,100);
+        mt=clamp(mt+14*dt,20,80);
+        $("#foamNeedle").style.bottom="calc("+foam+"% - 2px)";
+        $("#mtempNeedle").style.bottom="calc("+((mt-20)/60*100)+"% - 2px)";
+        $("#mtempV").textContent=Math.round(mt);
+        disp.textContent=Math.round(mt)+"°";
+        disp.setAttribute("fill",mt>68?"#ff8f8f":mt>=55?"#ffd9a3":"#9FD9B8");
+        const milkH=16+foam*0.14,foamH=foam*0.11;
+        milkR.setAttribute("y",150-milkH);milkR.setAttribute("height",milkH);
+        foamR.setAttribute("y",150-milkH-foamH);foamR.setAttribute("height",foamH);
+        puffT-=dt;if(puffT<=0){puff();puffT=0.12;}
+        if(mt>=80&&!done){holding=false;lock();}}
+      raf=requestAnimationFrame(loop);}
+    raf=requestAnimationFrame(loop);})();
+  /* --- 階段1：手描拉花 --- */
+  function traceArt(){
+    $("#lattePh1").classList.remove("hidden");
+    const cv=$("#traceCv"),wrap=$("#traceWrap");
+    const CS=156,DPR=Math.min(2,window.devicePixelRatio||1);
+    cv.width=CS*DPR;cv.height=CS*DPR;
+    const ctx=cv.getContext("2d");ctx.setTransform(DPR,0,0,DPR,0,0);
+    // --- 產生圖樣導引 ---
+    function heartPts(){const raw=[];
+      for(let i=0;i<=64;i++){const t=i/64*TAU;
+        raw.push([16*Math.pow(Math.sin(t),3),
+          -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))]);}
+      return raw;}
+    function leafPts(){const raw=[];
+      for(let i=0;i<=11;i++)raw.push([(i%2?1:-1)*30*(1-i*0.055),-52+i*8.8]);
+      for(let j=1;j<=6;j++)raw.push([0,-48+j*17]);
+      return raw;}
+    const pattern=Math.random()<0.5?"heart":"leaf";
+    let raw=pattern==="heart"?heartPts():leafPts();
+    let mx=0;raw.forEach(p=>{mx=Math.max(mx,Math.abs(p[0]),Math.abs(p[1]));});
+    const sc=52/mx,C=CS/2;
+    raw=raw.map(p=>[C+p[0]*sc,C+p[1]*sc]);
+    // 均勻重取樣導引點
+    function resample(pts,n){
+      const segs=[];let total=0;
+      for(let i=1;i<pts.length;i++){const d=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
+        segs.push(d);total+=d;}
+      const out=[pts[0]];let acc=0,target=total/(n-1),ti=1;
+      for(let i=1;i<pts.length&&out.length<n;i++){
+        let d=segs[i-1],a=pts[i-1],b2=pts[i];
+        while(acc+d>=target*ti&&out.length<n){
+          const f=(target*ti-acc)/d;
+          out.push([a[0]+(b2[0]-a[0])*f,a[1]+(b2[1]-a[1])*f]);ti++;}
+        acc+=d;}
+      return{pts:out,len:total};}
+    const g=resample(raw,72),guide=g.pts,guideLen=g.len;
+    // --- 畫導引 ---
+    function drawGuide(){
+      ctx.clearRect(0,0,CS,CS);
+      ctx.setLineDash([6,6]);ctx.lineWidth=3;ctx.lineCap="round";ctx.lineJoin="round";
+      ctx.strokeStyle="rgba(255,244,225,.55)";
+      ctx.beginPath();guide.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
+      ctx.stroke();ctx.setLineDash([]);}
+    drawGuide();
+    // --- 手描（必須照虛線順序描） ---
+    let milk=100,drawing=false,lastP=null,mine=[],done=false,gi=0;
+    const budget=guideLen*1.7;
+    $("#milkF").style.width="100%";$("#milkV").textContent="100%";
+    $("#traceSeq").textContent="0%";
+    function advance(p){
+      let guard=0;
+      while(gi<guide.length&&guard++<200){
+        if(Math.hypot(guide[gi][0]-p[0],guide[gi][1]-p[1])<8){gi++;continue;}
+        if(gi+1<guide.length&&Math.hypot(guide[gi+1][0]-p[0],guide[gi+1][1]-p[1])<8){gi+=2;continue;}
+        break;}
+      $("#traceSeq").textContent=Math.round(Math.min(1,gi/guide.length)*100)+"%";}
+    function xy(e){const r=cv.getBoundingClientRect();
+      return[(e.clientX-r.left)/r.width*CS,(e.clientY-r.top)/r.height*CS];}
+    function stroke(p){
+      ctx.setLineDash([]);ctx.lineWidth=9;ctx.lineCap="round";
+      ctx.strokeStyle="rgba(253,246,232,.96)";
+      ctx.beginPath();ctx.moveTo(lastP[0],lastP[1]);ctx.lineTo(p[0],p[1]);ctx.stroke();}
+    cv.onpointerdown=e=>{e.preventDefault();if(done)return;
+      drawing=true;lastP=xy(e);mine.push(lastP);advance(lastP);cv.setPointerCapture(e.pointerId);};
+    cv.onpointermove=e=>{e.preventDefault();
+      if(!drawing||done||milk<=0)return;
+      const p=xy(e);
+      const d=Math.hypot(p[0]-lastP[0],p[1]-lastP[1]);
+      if(d<2)return;
+      stroke(p);mine.push(p);advance(p);
+      milk=clamp(milk-d/budget*100,0,100);
+      $("#milkF").style.width=milk+"%";$("#milkV").textContent=Math.round(milk)+"%";
+      lastP=p;
+      if(milk<=0){SFX.splash();finish();}};
+    const pu=()=>{drawing=false;};
+    cv.onpointerup=pu;cv.onpointercancel=pu;
+    $("#traceDone").onclick=()=>{if(!done)finish();};
+    function finish(){done=true;
+      let artScore=10;
+      if(mine.length>=5){
+        const seq=gi/guide.length;             // 照順序描到哪
+        let prec=0;
+        for(const mp of mine){
+          let best=1e9;
+          for(const gp of guide){const dd=Math.hypot(gp[0]-mp[0],gp[1]-mp[1]);if(dd<best)best=dd;}
+          prec+=clamp(1-best/12,0,1);}         // 漸進：貼越近分越高
+        prec/=mine.length;
+        artScore=Math.round(clamp(seq*100,0,100)*0.55+clamp(prec*100,0,100)*0.45);}
+      const total=Math.round(steamScore*0.4+artScore*0.6);
+      $("#latteHint").textContent=(total>=80?(pattern==="heart"?"完美的愛心！💗":"漂亮的葉子！🍃"):
+        total>=55?"有模有樣 ❤️":"變成抽象畫了…🎨")+
+        "（奶泡 "+steamScore+"・拉花 "+artScore+"）";
+      (total>=55?SFX.ding:SFX.sad)();
+      setTimeout(()=>{ov.classList.add("hidden");resolve(total);},950);}
+  }
+});}
+
+/* ================= 營業日 ================= */
+const SEAT=[[70,215],[190,200],[125,275],[295,250],[415,300]]; // SVG 座標
+let D=null;
+function seatCount(){return 2+S.up.seats;}
+function spawnDelay(){
+  let d=8.0-S.up.sign*0.9-Math.min(2,S.rep/100)-dogs()*0.5;
+  if(S.flags.rain)d+=2;
+  return clamp(d,3.5,11)*rnd(0.75,1.3);}
+function patienceMax(){return 26+S.up.decor*2.5;}
+
+function drawTables(){
+  const g=document.querySelector("#tables");
+  g.innerHTML="";
+  const NS="http://www.w3.org/2000/svg";
+  for(let i=0;i<seatCount();i++){
+    const [x,y]=SEAT[i];
+    const grp=document.createElementNS(NS,"g");
+    const sh=document.createElementNS(NS,"ellipse");
+    sh.setAttribute("cx",x);sh.setAttribute("cy",y+9);sh.setAttribute("rx",32);sh.setAttribute("ry",8);
+    sh.setAttribute("fill","rgba(40,20,8,.25)");grp.appendChild(sh);
+    const leg=document.createElementNS(NS,"rect");
+    leg.setAttribute("x",x-4);leg.setAttribute("y",y);leg.setAttribute("width",8);leg.setAttribute("height",10);
+    leg.setAttribute("fill","#7a4a26");grp.appendChild(leg);
+    const top=document.createElementNS(NS,"ellipse");
+    top.setAttribute("cx",x);top.setAttribute("cy",y-2);top.setAttribute("rx",30);top.setAttribute("ry",13);
+    top.setAttribute("fill","#A5683B");top.setAttribute("stroke","#7a4a26");top.setAttribute("stroke-width",3);
+    grp.appendChild(top);
+    const hi=document.createElementNS(NS,"ellipse");
+    hi.setAttribute("cx",x-6);hi.setAttribute("cy",y-5);hi.setAttribute("rx",14);hi.setAttribute("ry",5);
+    hi.setAttribute("fill","rgba(255,220,170,.35)");grp.appendChild(hi);
+    // 凳子（在桌後）
+    const st=document.createElementNS(NS,"ellipse");
+    st.setAttribute("cx",x);st.setAttribute("cy",y-24);st.setAttribute("rx",13);st.setAttribute("ry",5.5);
+    st.setAttribute("fill","#8a5a34");st.setAttribute("stroke","#6e4526");st.setAttribute("stroke-width",2.5);
+    grp.insertBefore(st,grp.firstChild);
+    // 桌上小物：花瓶或蠟燭交錯
+    if(i%2===0){
+      const v=document.createElementNS(NS,"rect");
+      v.setAttribute("x",x+10);v.setAttribute("y",y-13);v.setAttribute("width",4.5);v.setAttribute("height",7);
+      v.setAttribute("rx",2);v.setAttribute("fill","#5E7C6E");grp.appendChild(v);
+      const fl=document.createElementNS(NS,"circle");
+      fl.setAttribute("cx",x+12.2);fl.setAttribute("cy",y-15);fl.setAttribute("r",2.8);
+      fl.setAttribute("fill","#C45D6A");grp.appendChild(fl);
+    }else{
+      const cd=document.createElementNS(NS,"rect");
+      cd.setAttribute("x",x+10);cd.setAttribute("y",y-11);cd.setAttribute("width",4);cd.setAttribute("height",6);
+      cd.setAttribute("rx",1.5);cd.setAttribute("fill","#FBF6EC");grp.appendChild(cd);
+      const fm=document.createElementNS(NS,"circle");
+      fm.setAttribute("cx",x+12);fm.setAttribute("cy",y-13);fm.setAttribute("r",2);
+      fm.setAttribute("fill","#FFC96B");grp.appendChild(fm);
+    }
+    g.appendChild(grp);
+  }
+}
+function updateStockbar(){
+  const sb=$("#stockbar");
+  const st=[["🌸",S.beans.light.q],["🥛",S.beans.medium.q],["🍫",S.beans.dark.q],["🍰",S.cake.q]];
+  sb.innerHTML=st.map(([ic,q])=>"<span class='"+(q<=0?"zero":"")+"'>"+ic+" ×"+q+"</span>").join("");
+}
+function startDay(){
+  D={t:0,dur:90,income:0,served:0,lost:0,repDelta:0,cust:[],mini:false,paused:false,
+    spawnT:rnd(0.8,1.6),over:false,petTapped:false,vipToday:new Set(),vipEventFired:false};
+  $("#cafeDay").textContent="Day "+S.day;
+  $("#cafeMoney").textContent="$"+S.money;
+  $("#cafeServed").textContent="☕ 0";
+  $("#cafeIncome").textContent="今日 +$0";
+  $("#cafeClock").textContent="營業中";
+  drawTables();updateStockbar();refreshAutoTgl();
+  $$("#room .cust").forEach(e=>e.remove());
+  ambT=0;ambientUpdate(0);
+  renderPetZone();
+  show("scr-cafe");
+  D.timer=setInterval(tick,100);
+}
+function renderPetZone(){
+  const z=$("#petzone");z.innerHTML="";
+  S.pets.forEach((p,i)=>{const d=strayDef(p.id);
+    const e=document.createElement("div");e.className="roampet";e.textContent=d.emoji;
+    e.style.left=(12+i*20)+"%";
+    e.onclick=ev=>{ev.stopPropagation();
+      (d.kind==="cat"?SFX.meow:SFX.woof)();
+      floatAt(e.getBoundingClientRect(),"❤️");
+      if(!D.petTapped){D.petTapped=true;D.repDelta+=1;S.rep+=1;toast(d.name+"蹭了蹭你");}};
+    z.appendChild(e);
+    (function roam(el){if(!D||D.over)return;
+      el.style.left=rnd(4,86)+"%";
+      el._t=setTimeout(()=>roam(el),rnd(3200,5200));})(e);
+  });
+}
+function sparkleAt(rect){
+  for(let i=0;i<3;i++){
+    const f=document.createElement("div");f.className="float spark";f.textContent="✨";
+    f.style.left=(rect.left+rect.width/2-9+rnd(-22,22))+"px";
+    f.style.top=(rect.top+rnd(-6,14))+"px";
+    f.style.animationDelay=(i*0.09)+"s";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1250);}}
+function floatAt(rect,txt){
+  const f=document.createElement("div");f.className="float";f.textContent=txt;
+  f.style.left=(rect.left+rect.width/2-14)+"px";f.style.top=(rect.top-8)+"px";
+  document.body.appendChild(f);
+  setTimeout(()=>f.remove(),1000);
+}
+function pickOrderKey(){
+  const stock={pourL:S.beans.light.q,pourD:S.beans.dark.q,latte:S.beans.medium.q,cake:S.cake.q};
+  const w=MENUKEYS.map(k=>stock[k]>0?3:(k==="cake"?0.5:0.7));
+  const tot=w.reduce((a,b)=>a+b,0);let r=Math.random()*tot;
+  for(let i=0;i<MENUKEYS.length;i++){r-=w[i];if(r<=0)return MENUKEYS[i];}
+  return"latte";}
+function pickVip(){
+  if(S.day<2)return null;
+  const pool=VIP.filter(v=>{const st=vipState(v.id);return st.lastDay<S.day-1||!st.met;});
+  if(!pool.length||Math.random()>0.38)return null;
+  const met=pool.filter(v=>vipState(v.id).met);
+  const unmet=pool.filter(v=>!vipState(v.id).met);
+  if(met.length&&Math.random()<0.7)return pick(met);
+  if(unmet.length)return pick(unmet);
+  return pick(pool);}
+function spawnCust(){
+  const free=[];for(let i=0;i<seatCount();i++)
+    if(!D.cust.some(c=>c.seat===i&&!c.leaving))free.push(i);
+  if(!free.length)return;
+  const seat=pick(free);
+  let vip=null,order;
+  if(!D.vipToday)D.vipToday=new Set();
+  if(D.vipToday.size<2){vip=pickVip();
+    if(vip&&D.vipToday.has(vip.id))vip=null;}
+  if(vip){order=MENUKEYS.find(k=>k===vip.fav)||pickOrderKey();D.vipToday.add(vip.id);}
+  else order=pickOrderKey();
+  const c={seat,order,state:"walkin",pat:patienceMax(),patMax:patienceMax(),el:null,leaving:false,vip:vip||null};
+  const el=document.createElement("div");el.className="cust walkin";
+  el.style.aspectRatio="60/92";
+  el.innerHTML=personHTML(vip?{skin:vip.skin,hair:vip.hair,shirt:vip.shirt,pants:vip.pants,glasses:vip.glasses,hat:vip.hat}:null)+
+    "<div class='bubble hidden'>"+MENU[order].icon+" "+MENU[order].name+"</div>"+
+    "<div class='pat hidden'><i></i></div>";
+  posCust(el,DOOR[0],DOOR[1]);
+  el.onclick=ev=>{ev.stopPropagation();custTap(c);};
+  $("#room").appendChild(el);c.el=el;
+  D.cust.push(c);SFX.tap();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    posCust(el,SEAT[seat][0],SEAT[seat][1]-6);}));
+  c.walkT=setTimeout(()=>{
+    if(c.doneEl||!D)return;
+    c.state="ordering";
+    el.classList.remove("walkin");el.classList.add("sit");
+    const bub=el.querySelector(".bubble");
+    if(c.vip){
+      const vs=vipState(c.vip.id);
+      if(!vs.met){
+        bub.innerHTML="<b style='font-size:11px;color:#C68A3E'>新常客！</b> "+MENU[c.order].icon+" "+MENU[c.order].name;
+        vs.met=true;
+      }else{
+        bub.innerHTML=MENU[c.order].icon+" "+c.vip.name;
+      }}
+    bub.classList.remove("hidden");
+    el.querySelector(".pat").classList.remove("hidden");
+    SFX.pop();
+    // 常客事件觸發
+    if(c.vip&&!D.vipEventFired){
+      const vs=vipState(c.vip.id);
+      if(vs.visits>=2&&!vs.evDone&&Math.random()<0.45){
+        D.vipEventFired=true;
+        setTimeout(()=>triggerCustEvent(c),800);
+      }}
+  },1200);
+}
+async function custTap(c){
+  if(!c||c.state!=="ordering")return;
+  const m=MENU[c.order];
+  if(m.kind==="cake"){
+    if(S.cake.q<=0){warnBubble(c);toast("蛋糕賣完了！");return;}
+    S.cake.q--;updateStockbar();
+    serveNow(c,S.cake.quality,null,false);
+    return;}
+  if(S.beans[m.bean].q<=0){warnBubble(c);toast("沒有"+ROASTS[m.bean].name+"豆了！");return;}
+  const useAuto=S.autoOn&&autoUnlocked(m.kind);
+  if(!useAuto&&D.mini){toast("手上還在忙！");return;}
+  S.beans[m.bean].q--;updateStockbar();
+  c.state="making";
+  const b=c.el.querySelector(".bubble");b.classList.add("make");
+  if(useAuto){
+    b.innerHTML="🤖 機器製作中…";SFX.tap();
+    setTimeout(()=>{
+      if(c.doneEl||!D)return;
+      const aq=autoQ(m.kind);
+      const beanQ=S.beans[m.bean].quality||50;
+      serveNow(c,Math.round(beanQ*0.5+aq*0.5),aq,true);
+    },2200);
+    return;}
+  b.innerHTML="☕ 製作中…";
+  D.mini=true;SFX.ding();
+  if(!S.tut[m.kind]){D.paused=true;await tut(m.kind);D.paused=false;}
+  const p=m.kind==="pour"?playPour(m.name,m.bean):playLatte();
+  p.then(score=>{
+    D.mini=false;
+    S.skill[m.kind]++;
+    if($("#autoTgl"))refreshAutoTgl();
+    if(c.doneEl)return;
+    const beanQ=S.beans[m.bean].quality||50;
+    const q=Math.round(beanQ*0.5+score*0.5);
+    serveNow(c,q,score,false);
+  });
+}
+function warnBubble(c){SFX.bad();
+  const b=c.el.querySelector(".bubble");b.classList.add("warn");
+  setTimeout(()=>b&&b.classList.remove("warn"),600);}
+function serveNow(c,quality,score,isAuto){
+  c.state="served";
+  const price=MENU[c.order].price;
+  const patR=clamp(c.pat/c.patMax,0,1);
+  let tip=price*(0.06+quality/100*0.4+patR*0.12);
+  tip*=1+S.up.decor*0.08+cats()*0.12;
+  const pay=price+Math.round(tip);
+  D.income+=pay;S.money+=pay;D.served++;S.stats.served++;
+  if(!isAuto&&(score===null||score>=35)){D.repDelta++;S.rep++;}
+  const b=c.el.querySelector(".bubble");b.classList.remove("make");
+  const good=!(score!==null&&score<35);
+  if(c.vip){
+    const vs=vipState(c.vip.id);
+    vs.visits++;vs.lastDay=S.day;
+    if(good){vs.aff=clamp(vs.aff+ri(8,14),0,100);
+      b.innerHTML="😋 "+c.vip.lines.happy;}
+    else{b.innerHTML="😕 "+c.vip.lines.greet;}
+    save();
+  }else{
+    b.innerHTML=good?(isAuto?"🙂 ":"😋 ")+MENU[c.order].icon:"😕 "+MENU[c.order].icon;}
+  const per=c.el.querySelector(".person");
+  if(per&&good)per.classList.add("happy");
+  sparkleAt(c.el.getBoundingClientRect());
+  floatAt(c.el.getBoundingClientRect(),"+$"+pay);
+  SFX.coin();
+  $("#cafeMoney").textContent="$"+S.money;
+  $("#cafeServed").textContent="☕ "+D.served;
+  $("#cafeIncome").textContent="今日 +$"+D.income;
+  save();
+  setTimeout(()=>leave(c,false),900);
+}
+function leave(c,angry){
+  if(c.doneEl)return;c.doneEl=true;c.leaving=true;
+  if(c.walkT)clearTimeout(c.walkT);
+  const b=c.el.querySelector(".bubble");
+  b.classList.remove("hidden");
+  if(angry){D.lost++;D.repDelta--;S.rep=Math.max(0,S.rep-1);
+    if(c.vip){const vs=vipState(c.vip.id);vs.aff=Math.max(0,vs.aff-8);
+      b.innerHTML="💢 "+c.vip.lines.mad;}
+    else b.innerHTML="💢";
+    SFX.sad();
+    const per=c.el.querySelector(".person");if(per)per.classList.add("mad");}
+  c.el.querySelector(".pat").classList.add("hidden");
+  c.el.classList.remove("sit");
+  c.el.classList.add("walkin");
+  if(angry)c.el.classList.add("fast");
+  posCust(c.el,DOOR[0],DOOR[1]);
+  const walkDur=angry?800:1200;
+  setTimeout(()=>{c.el.classList.add("leave2");},walkDur-200);
+  setTimeout(()=>{c.el.remove();D.cust=D.cust.filter(x=>x!==c);},walkDur+150);
+}
+function lerpC(c1,c2,f){
+  const p=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+  const a=p(c1),b=p(c2);
+  return "rgb("+a.map((v,i)=>Math.round(v+(b[i]-v)*f)).join(",")+")";}
+let ambT=0;
+function ambientUpdate(p){
+  const skyA=document.querySelector("#skyA"),skyB=document.querySelector("#skyB");
+  if(skyA){
+    if(p<0.5){const f=p/0.5;
+      skyA.setAttribute("stop-color",lerpC("#BFE3F0","#A8D8F0",f));
+      skyB.setAttribute("stop-color",lerpC("#F3EBC9","#FFF3D0",f));
+    }else{const f=(p-0.5)/0.5;
+      skyA.setAttribute("stop-color",lerpC("#A8D8F0","#F2A26E",f));
+      skyB.setAttribute("stop-color",lerpC("#FFF3D0","#FFC08A",f));}}
+  const amb=$("#ambient");
+  if(amb){
+    const a1=clamp((p-0.45)/0.55,0,1)*0.16;
+    const a2=clamp((p-0.8)/0.2,0,1)*0.12;
+    amb.style.background="linear-gradient(180deg,rgba(255,150,70,"+a1.toFixed(3)+"),rgba(110,60,100,"+a2.toFixed(3)+"))";}
+}
+function tick(){
+  if(D.paused)return;
+  const dt=0.1;D.t+=dt;
+  ambT+=dt;
+  if(ambT>=0.5){ambT=0;ambientUpdate(clamp(D.t/D.dur,0,1));}
+  $("#timefill").style.width=clamp(100-(D.t/D.dur)*100,0,100)+"%";
+  if(!D.over){
+    $("#cafeClock").textContent="營業中 "+Math.max(0,Math.ceil(D.dur-D.t))+"s";
+    D.spawnT-=dt;
+    if(D.spawnT<=0&&D.t<D.dur-6){spawnCust();D.spawnT=spawnDelay();}
+    D.cust.forEach(c=>{
+      if(c.state==="ordering"){
+        c.pat-=dt;
+        const bar=c.el.querySelector(".pat i");
+        const r=clamp(c.pat/c.patMax,0,1);
+        bar.style.width=(r*100)+"%";bar.classList.toggle("low",r<0.35);
+        if(c.pat<=0)leave(c,true);
+      }});
+    if(D.t>=D.dur){D.over=true;$("#cafeClock").textContent="打烊中…";
+      D.cust.forEach(c=>{if(c.state==="ordering"||c.state==="walkin")leave(c,false);});}
+  }else{
+    if(!D.mini&&!D.cust.length)endDay();
+  }
+}
+function endDay(){
+  clearInterval(D.timer);
+  $$("#petzone .roampet").forEach(e=>clearTimeout(e._t));
+  delete S.flags.rain;
+  $("#settleIncome").textContent="+$"+D.income;
+  $("#stServed").textContent=D.served+" 位";
+  $("#stLost").textContent=D.lost+" 位";
+  $("#stRep").textContent=(D.repDelta>=0?"+":"")+D.repDelta+" ⭐";
+  $("#settleOv").classList.remove("hidden");
+  SFX.level();
+  save();
+}
+$("#settleNext").onclick=async()=>{
+  SFX.tap();
+  $("#settleOv").classList.add("hidden");
+  await maybeEvent();
+  await strayPhase();
+  S.day++;delete S.flags.strayBoost;
+  save();renderMorning();show("scr-morning");
+};
+
+function triggerCustEvent(c){
+  if(!c.vip||c.doneEl||!D)return;
+  const v=c.vip,ev=VIP_EVENT_REP.find(e=>e.id===v.id);
+  if(!ev)return;
+  D.paused=true;
+  $("#custEvAvatar").innerHTML=personHTML({skin:v.skin,hair:v.hair,shirt:v.shirt,pants:v.pants,glasses:v.glasses,hat:v.hat});
+  $("#custEvAvatar").querySelector("svg").style.width="56px";
+  $("#custEvName").textContent=v.name;
+  $("#custEvMsg").innerHTML="<div class='cname'>"+v.name+"</div>"+v.lines.event;
+  const acts=$("#custEvActs");acts.innerHTML="";
+  const yes=document.createElement("button");yes.className="btn drop mini";yes.textContent="好啊！";
+  yes.style.marginBottom="8px";
+  yes.onclick=()=>{SFX.ding();
+    const vs=vipState(v.id);vs.evDone=true;
+    S.rep+=ev.rep;S.money+=ev.money;save();
+    $("#custEvMsg").innerHTML="<div class='cname'>"+v.name+"</div>"+v.lines.eventOk+
+      "<div style='margin-top:6px;color:#9fd9b8;font-size:12px'>"+ev.msg+"</div>";
+    acts.innerHTML="";
+    const ok=document.createElement("button");ok.className="btn ghost mini";ok.textContent="繼續營業";
+    ok.onclick=()=>{$("#custEvOv").classList.add("hidden");D.paused=false;};
+    acts.appendChild(ok);};
+  acts.appendChild(yes);
+  const no=document.createElement("button");no.className="btn ghost mini";no.textContent="不太方便…";
+  no.onclick=()=>{SFX.tap();$("#custEvOv").classList.add("hidden");D.paused=false;};
+  acts.appendChild(no);
+  $("#custEvOv").classList.remove("hidden");
+}
+function refreshAutoTgl(){
+  const t=$("#autoTgl");if(!t)return;
+  const anyAuto=autoUnlocked("pour")||autoUnlocked("latte");
+  t.classList.toggle("hidden",!anyAuto);
+  t.classList.toggle("on",!!S.autoOn);
+  t.textContent="🤖 自動："+(S.autoOn?"開":"關");
+}
+$("#autoTgl").onclick=()=>{S.autoOn=!S.autoOn;save();refreshAutoTgl();
+  toast(S.autoOn?"自動出杯：開（品質較低、不加人氣）":"自動出杯：關，回到手作");SFX.tap();};
+
+/* ================= 事件 ================= */
+function maybeEvent(){
+  if(S.day<2||Math.random()>0.45)return Promise.resolve();
+  const pool=EVENTS.filter(e=>!(e.id==="rain"&&S.flags.rain));
+  const ev=pick(pool);
+  return new Promise(res=>{
+    $("#evIcon").textContent=ev.icon;
+    $("#evTitle").textContent=ev.t;
+    $("#evBody").textContent=ev.d;
+    const acts=$("#evActs");acts.innerHTML="";
+    ev.a.forEach(a=>{
+      const b=document.createElement("button");
+      b.className="btn drop mini";b.style.marginBottom="8px";b.textContent=a.t;
+      if(a.cond&&!a.cond())b.disabled=true;
+      b.onclick=()=>{SFX.tap();
+        const msg=a.run();
+        $("#evBody").textContent=msg;
+        acts.innerHTML="";
+        const ok=document.createElement("button");
+        ok.className="btn ghost mini";ok.textContent="好";
+        ok.onclick=()=>{$("#eventOv").classList.add("hidden");save();res();};
+        acts.appendChild(ok);};
+      acts.appendChild(b);});
+    $("#eventOv").classList.remove("hidden");
+  });
+}
+
+/* ================= 流浪動物 ================= */
+function heartsFx(n){
+  const box=$("#heartsFx");box.innerHTML="";
+  for(let i=0;i<n;i++){const s=document.createElement("span");
+    s.textContent=pick(["❤️","💕","💗"]);
+    s.style.setProperty("--dx",rnd(-40,40)+"px");
+    s.style.animationDelay=(i*0.12)+"s";
+    box.appendChild(s);}
+  setTimeout(()=>box.innerHTML="",1600);
+}
+function strayState(id){
+  if(!S.stray[id])S.stray[id]={aff:0,met:false,gone:false,notified:false};
+  return S.stray[id];}
+function updateAffUI(def,st){
+  $("#syAff").style.width=clamp(st.aff/def.need*100,0,100)+"%";
+  $("#syAffT").textContent="好感度 "+st.aff+" / "+def.need;}
+function strayPhase(){
+  const goneId=Object.keys(S.stray).find(id=>S.stray[id].gone&&!S.stray[id].notified);
+  if(goneId){S.stray[goneId].notified=true;save();
+    return showFarewell(strayDef(goneId));}
+  let p=0.75+(S.flags.strayBoost?0.25:0);
+  if(S.day<=2)p=1;
+  if(Math.random()>p)return Promise.resolve();
+  const pool=STRAYS.filter(d=>!S.pets.some(x=>x.id===d.id)&&!strayState(d.id).gone);
+  if(!pool.length)return Promise.resolve();
+  if(S.flags.strayBoost){
+    const met=pool.filter(d=>strayState(d.id).met).sort((a,b)=>strayState(b.id).aff-strayState(a.id).aff);
+    if(met.length)return encounter(met[0]);}
+  const weights=pool.map(d=>strayState(d.id).met?6:1);
+  const tot=weights.reduce((a,b)=>a+b,0);let r=Math.random()*tot,def=pool[0];
+  for(let i=0;i<pool.length;i++){r-=weights[i];if(r<=0){def=pool[i];break;}}
+  return encounter(def);
+}
+function showFarewell(d){
+  return new Promise(res=>{
+    $("#evIcon").textContent="🌙";
+    $("#evTitle").textContent="空蕩蕩的巷口";
+    $("#evBody").textContent="打烊後你在門口等了一會兒，"+d.name+"沒有出現。聽隔壁的阿姨說，牠好像搬去別的地方了……";
+    const acts=$("#evActs");acts.innerHTML="";
+    const ok=document.createElement("button");
+    ok.className="btn ghost mini";ok.textContent="希望牠過得好";
+    ok.onclick=()=>{$("#eventOv").classList.add("hidden");SFX.sad();res();};
+    acts.appendChild(ok);
+    $("#eventOv").classList.remove("hidden");
+  });
+}
+function encounter(def){
+  return new Promise(res=>{
+    const st=strayState(def.id);
+    const first=!st.met;st.met=true;
+    let fed=false,petted=false,adopted=false;
+    $("#syIcon").textContent=def.emoji;
+    $("#syName").textContent=first?"陌生的"+KINDNAME[def.kind]:def.name;
+    $("#syDesc").textContent=first?
+      "打烊後，一隻"+KINDNAME[def.kind]+"在門口探頭探腦，和你四目相對。":
+      def.name+"又出現在門口了，"+(st.aff>=60?"看到你就小跑步過來。":"在不遠處觀望著你。");
+    $("#syMsg").textContent="";
+    updateAffUI(def,st);
+    const feedBtn=$("#syFeed"),petBtn=$("#syPet"),byeBtn=$("#syBye");
+    function refreshBtns(){
+      feedBtn.disabled=fed||S.petFood<1||adopted;
+      feedBtn.innerHTML=fed?"😋 吃飽了":"🥫 餵食（剩 "+S.petFood+"）";
+      petBtn.disabled=petted||adopted;
+      byeBtn.textContent=adopted?"🎉 歡迎回家":"👋 說再見";}
+    function gain(n){st.aff=clamp(st.aff+n,0,def.need);
+      if(!first)$("#syName").textContent=def.name;
+      updateAffUI(def,st);
+      if(st.aff>=def.need&&!adopted){adopted=true;
+        setTimeout(()=>{
+          $("#syDesc").textContent=def.name+"在你腳邊蹭來蹭去，怎麼趕也不走——牠決定住下來了！";
+          $("#syMsg").textContent="🎉 "+def.name+" 成為咖啡館的夥伴！";
+          SFX.level();heartsFx(6);refreshBtns();
+        },500);}}
+    feedBtn.onclick=()=>{
+      if(fed||S.petFood<1)return;
+      fed=true;S.petFood--;
+      const n=ri(25,35);gain(n);
+      (def.kind==="cat"?SFX.meow:SFX.woof)();
+      heartsFx(3);
+      $("#syMsg").textContent=first?
+        "牠小心翼翼地靠近，吃得津津有味。（好感 +"+n+"）":
+        def.name+"吃得津津有味，尾巴晃啊晃。（好感 +"+n+"）";
+      if(first)$("#syDesc").textContent="牠叫「"+def.name+"」好了。"+def.desc;
+      refreshBtns();save();};
+    petBtn.onclick=()=>{
+      if(petted)return;petted=true;
+      if(st.aff>=35){const n=ri(6,12);gain(n);SFX.heart();heartsFx(2);
+        $("#syMsg").textContent=(def.kind==="cat"?"呼嚕呼嚕～":"尾巴搖成螺旋槳！")+"（好感 +"+n+"）";}
+      else if(Math.random()<0.5){gain(5);SFX.heart();
+        $("#syMsg").textContent="牠遲疑了一下，讓你摸了摸頭。（好感 +5）";}
+      else{(def.kind==="cat"?SFX.bad:SFX.sad)();
+        $("#syMsg").textContent=def.kind==="cat"?"哈——！牠往後跳了一步。":"牠低下頭往後退了退。";}
+      refreshBtns();save();};
+    byeBtn.onclick=()=>{
+      SFX.tap();
+      if(adopted){S.pets.push({id:def.id});save();}
+      else{
+        const pGone=st.aff>=50?0.04:st.aff>=25?0.10:0.22;
+        if(Math.random()<pGone)st.gone=true;
+        save();}
+      $("#strayOv").classList.add("hidden");
+      res();};
+    refreshBtns();
+    $("#strayOv").classList.remove("hidden");
+  });
+}
+
+/* ================= 綁定 & 啟動 ================= */
+$("#btnRoast").onclick=()=>{SFX.tap();openPick();};
+$("#pickCancel").onclick=()=>{SFX.tap();$("#pickOv").classList.add("hidden");};
+$("#btnCake").onclick=async()=>{
+  if(S.money<CAKE_COST){toast("錢不夠買材料（$"+CAKE_COST+"）");SFX.bad();return;}
+  SFX.tap();await tut("cake");
+  S.money-=CAKE_COST;renderMorning();playCake();};
+$("#btnCakeAuto").onclick=()=>{
+  if(S.money<CAKE_COST){toast("錢不夠買材料（$"+CAKE_COST+"）");SFX.bad();return;}
+  S.money-=CAKE_COST;
+  const q=autoQ("cake");
+  addCake(CAKE_YIELD,q);
+  SFX.coin();save();renderMorning();
+  toast("🤖 機器蛋糕 ×"+CAKE_YIELD+"（品質 "+q+"）");};
+$("#btnRoastAuto").onclick=()=>{
+  if(S.money<ROAST_COST){toast("錢不夠買生豆（$"+ROAST_COST+"）");SFX.bad();return;}
+  openPick(true);};
+$("#btnShop").onclick=()=>{SFX.tap();renderShop();show("scr-shop");};
+$("#shopBack").onclick=()=>{SFX.tap();renderMorning();show("scr-morning");};
+$("#btnPets").onclick=()=>{SFX.tap();renderPets();show("scr-pets");};
+$("#petsBack").onclick=()=>{SFX.tap();renderMorning();show("scr-morning");};
+$("#btnVips").onclick=()=>{SFX.tap();renderVips();show("scr-vips");};
+$("#vipsBack").onclick=()=>{SFX.tap();renderMorning();show("scr-morning");};
+function renderVips(){
+  const list=$("#vipsList");list.innerHTML="";
+  const mk=html=>{const d=document.createElement("div");d.innerHTML=html;return d.firstElementChild;};
+  VIP.forEach(v=>{
+    const vs=S.vip[v.id];
+    if(vs&&vs.met){
+      const card=document.createElement("div");card.className="vipcard";
+      const av=document.createElement("div");av.className="vav";
+      av.innerHTML=personHTML({skin:v.skin,hair:v.hair,shirt:v.shirt,pants:v.pants,glasses:v.glasses,hat:v.hat});
+      card.appendChild(av);
+      const info=document.createElement("div");info.className="vinfo";
+      const favM=MENU[v.fav];
+      info.innerHTML="<div class='vn'>"+v.name+"</div>"+
+        "<div class='vd'>"+v.desc+"</div>"+
+        "<div class='vfav'>最愛："+favM.icon+" "+favM.name+"　來過 "+vs.visits+" 次</div>"+
+        "<div class='vhearts'>"+vipAffStr(vs.aff)+"</div>"+
+        (vs.evDone?"<div style='font-size:11px;color:#ffd9a3;margin-top:2px'>📖 故事已完成</div>":"");
+      card.appendChild(info);
+      list.appendChild(card);
+    }else{
+      list.appendChild(mk("<div class='vipcard unknown'><div class='vav' style='display:flex;align-items:center;justify-content:center;font-size:22px'>❔</div>"+
+        "<div class='vinfo'><div class='vn'>？？？</div><div class='vd'>還沒見過的常客</div></div></div>"));
+    }});
+}
+$("#btnOpen").onclick=()=>{
+  if(!anyStock()){toast("倉庫空空的，先烘豆或做蛋糕吧！");SFX.bad();return;}
+  SFX.ding();startDay();};
+
+/* btnNew / btnContinue 已移至存檔欄位 */
+
+$("#btnPlay").onclick=()=>{SFX.tap();openSlotOv(true);};
+$("#hudSave").onclick=()=>{SFX.tap();openSlotOv(false);};
+(function init(){
+  if(!STORE_OK)$("#storeWarn").classList.remove("hidden");
+  show("scr-title");
+})();
+
+</script>
+</body>
+</html>

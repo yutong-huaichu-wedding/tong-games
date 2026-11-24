@@ -1,0 +1,18 @@
+# 只部署房間 API（前端由 GitHub Pages 提供）。
+# 若要 Worker 同時托管前端，可用 wrangler.with-assets.jsonc（需先 build dist/）。
+name = "table-club"
+main = "worker/index.ts"
+compatibility_date = "2026-11-01"
+account_id = "57fb23076544a3be231ee74c0d1df0f9"
+workers_dev = true
+
+# npx wrangler d1 create table-club-db  之後換成真正的 database_id
+[[d1_databases]]
+binding = "DB"
+database_name = "table-club-db"
+database_id = "1f0ba777-41e1-472c-864f-087415190fd4"
+migrations_dir = "migrations"
+
+# 填 GitHub Pages 的 origin。例：https://<github-user>.github.io
+[vars]
+ALLOWED_ORIGINS = "http://127.0.0.1:8765,http://localhost:8765"

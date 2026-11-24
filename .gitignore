@@ -1,0 +1,10 @@
+.DS_Store
+*.log
+node_modules/
+.wrangler/
+.dev.vars
+**/.dev.vars
+portfolio-draft.zip
+.cache/
+
+.secrets/

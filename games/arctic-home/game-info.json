@@ -1,0 +1,12 @@
+{
+  "title": "極地家園",
+  "version": "v13",
+  "entry": "index.html",
+  "type": "static-web-game",
+  "engine": "Babylon.js 7",
+  "save": "localStorage",
+  "external_dependencies": [
+    "https://cdn.jsdelivr.net/npm/babylonjs@7/babylon.js",
+    "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap"
+  ]
+}

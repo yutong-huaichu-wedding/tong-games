@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>留言管理｜TONG GAMES</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要內容</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/img/mark.svg" width="28" height="28" alt="">
+        <span data-studio-name>TONG GAMES</span>
+      </a>
+      <nav class="site-nav" aria-label="主要選單">
+        <a href="index.html#games">遊戲</a>
+        <a href="feedback.html">留言</a>
+        <a href="about.html">關於</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="page">
+    <div class="wrap prose" style="max-width:52em">
+      <h1>留言管理</h1>
+      <p class="lead">只有知道管理密鑰的人可以查看、公開或刪除留言。密鑰存在瀏覽器這個分頁期間，不會寫進網站檔案。</p>
+
+      <form class="admin-gate" id="gate">
+        <label class="admin-token">管理密鑰
+          <input type="password" id="token" name="token" autocomplete="off" spellcheck="false" required>
+        </label>
+        <label class="fb-field" style="margin:0">篩選
+          <select id="status">
+            <option value="all">全部</option>
+            <option value="public_requested">想公開、尚未核准</option>
+            <option value="pending">未公開</option>
+            <option value="approved">已公開</option>
+          </select>
+        </label>
+        <p class="fb-actions" style="margin:0"><button type="submit" class="btn btn-play">讀取留言</button></p>
+      </form>
+      <p class="fb-status" id="status-msg" role="status" aria-live="polite"></p>
+      <div id="list"></div>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html">
+      <img src="assets/img/mark.svg" width="22" height="22" alt="">
+      <span data-studio-name>TONG GAMES</span>
+    </a>
+    <p class="footer-copy">© <span data-studio-year>2026</span> <span data-studio-name>TONG GAMES</span></p>
+  </footer>
+
+  <script src="assets/js/games.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

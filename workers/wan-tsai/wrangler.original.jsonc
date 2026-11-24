@@ -1,0 +1,9 @@
+{
+  "name": "wan-tsai-time-travel",
+  "main": "server/worker.js",
+  "compatibility_date": "2026-11-24",
+  "workers_dev": true,
+  "vars": {
+    "CORS_ORIGINS": ""
+  }
+}

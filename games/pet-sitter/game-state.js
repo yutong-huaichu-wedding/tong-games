@@ -1,0 +1,15 @@
+export const SAVE_KEY='pet-sitter-v1';
+export const JOBS={cat:{name:'林小姐的貓咪・奶茶',pet:'奶茶',pay:180,tasks:['food','water','clean','play','pet'],note:'奶茶有點慢熟。飼料在藍色碗裡，請幫牠換水、整理貓砂。牠喜歡逗貓棒，也喜歡有人陪著。'},dog:{name:'陳先生的狗狗・豆豆',pet:'豆豆',pay:240,tasks:['food','water','play','pet','walk'],note:'豆豆看到人就很開心。餵食、換水後，請陪牠玩，再牽牠去街區北邊的公園。回來記得帶牠進門。'}};
+export const LABELS={food:'添飼料',water:'換清水',clean:'清理貓砂',play:'陪牠玩',pet:'溫柔摸摸',walk:'散步並回家'};
+export const GOODS={bed:{name:'柔軟寵物床',price:220,desc:'一個安心打盹的小角落。'},toy:{name:'小魚玩具',price:120,desc:'回家後，可以陪小橘玩。'},tree:{name:'窗邊貓跳台',price:480,desc:'讓小橘爬上高處看風景。'}};
+export function fresh(){return {version:1,day:1,money:120,jobs:{cat:{accepted:false,done:[],paid:false},dog:{accepted:false,done:[],paid:false}},strayTrust:0,strayDay:0,adopted:false,goods:[],homeCare:[],journal:[],visits:{cat:0,dog:0}};}
+export function normalize(raw){const s=fresh();if(!raw||raw.version!==1)return s;s.day=Math.max(1,Math.floor(Number(raw.day)||1));s.money=Math.max(0,Math.floor(Number(raw.money)||0));s.strayTrust=Math.min(3,Math.max(0,Math.floor(Number(raw.strayTrust)||0)));s.strayDay=Math.max(0,Math.floor(Number(raw.strayDay)||0));s.adopted=raw.adopted===true;s.goods=[...new Set((raw.goods||[]).filter(k=>GOODS[k]))];s.homeCare=[...new Set((raw.homeCare||[]).filter(k=>['food','water','play','pet'].includes(k)))];s.journal=Array.isArray(raw.journal)?raw.journal.filter(x=>typeof x==='string').slice(-40):[];for(const k of ['cat','dog']){const j=raw.jobs?.[k];if(j){s.jobs[k]={accepted:j.accepted===true,done:[...new Set((j.done||[]).filter(t=>JOBS[k].tasks.includes(t)))],paid:j.paid===true};}s.visits[k]=Math.max(0,Math.floor(Number(raw.visits?.[k])||0));}return s;}
+export function record(s,line){s.journal.push(`第 ${s.day} 天｜${line}`);s.journal=s.journal.slice(-40);}
+export function accept(s,k){const j=s.jobs[k];if(j.paid||j.accepted)return false;j.accepted=true;record(s,`接下了${JOBS[k].pet}的委託。`);return true;}
+export function task(s,k,t){const j=s.jobs[k];if(!j.accepted||j.paid||!JOBS[k].tasks.includes(t)||j.done.includes(t))return false;j.done.push(t);return true;}
+export function canFinish(s,k){const j=s.jobs[k];return j.accepted&&!j.paid&&JOBS[k].tasks.every(t=>j.done.includes(t));}
+export function finish(s,k){if(!canFinish(s,k))return false;s.jobs[k].paid=true;s.money+=JOBS[k].pay;s.visits[k]++;record(s,`照顧完${JOBS[k].pet}，收到 ${JOBS[k].pay} 元。`);return true;}
+export function befriend(s){if(s.adopted||s.strayDay===s.day)return false;s.strayDay=s.day;s.strayTrust=Math.min(3,s.strayTrust+1);record(s,['小橘願意吃你放下的飼料了。','小橘開始主動走向你。','小橘蹭了蹭你的手，牠已經信任你。'][s.strayTrust-1]);return true;}
+export function adopt(s){if(s.adopted||s.strayTrust<3)return false;s.adopted=true;record(s,'完成街坊確認與收編準備，小橘成為家人。');return true;}
+export function buy(s,k){const g=GOODS[k];if(!g||s.goods.includes(k)||s.money<g.price)return false;s.money-=g.price;s.goods.push(k);record(s,`買了${g.name}。`);return true;}
+export function nextDay(s){s.day++;s.jobs={cat:{accepted:false,done:[],paid:false},dog:{accepted:false,done:[],paid:false}};s.homeCare=[];record(s,'新的一天，慢慢來也沒關係。');}

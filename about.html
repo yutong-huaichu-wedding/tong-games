@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>關於｜TONG GAMES</title>
+  <meta name="description" content="TONG 的瀏覽器小遊戲入口。不用下載、不用註冊，在網頁上就能玩。">
+  <meta property="og:site_name" content="TONG GAMES">
+  <link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要內容</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/img/mark.svg" width="28" height="28" alt="">
+        <span data-studio-name>TONG GAMES</span>
+      </a>
+      <nav class="site-nav" aria-label="主要選單">
+        <a href="index.html#games">遊戲</a>
+        <a href="feedback.html">留言</a>
+        <a href="about.html">關於</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="page">
+    <article class="wrap prose">
+      <h1>關於這個網站</h1>
+      <p class="lead">這是 <span data-studio-name>TONG GAMES</span> 的瀏覽器小遊戲入口：打開分頁就能玩，不必下載、也不必註冊。</p>
+      <p>網站名稱只要改 <code>assets/js/games.js</code> 裡的 <code>studioName</code>，標題、頁首和頁尾都會一起換掉。</p>
+      <p>遊戲放在 <code>games/</code>，並在同一份設定檔登記。遊戲頁會把作品嵌在頁面裡，也提供獨立分頁開啟，並附上操作說明。</p>
+      <p>玩完可以到各遊戲頁或「留言」頁寫回饋：評分、類型、內容與選填暱稱即可，不必留下電子郵件。預設只有作者看得到；若希望公開，需再經作者審核。</p>
+      <p>《灣彩小鎮》的官方獎號與穿越，以及《聚一桌》的好友房開局，需要另外部署的 Cloudflare Worker。後端原始碼在 <code>workers/</code>，網址填在 <code>games.js</code>。獎號會向台灣彩券官方來源查詢真實歷史資料，不會用假號碼代替。</p>
+      <h2>託管方式</h2>
+      <p>靜態網站預備放在 GitHub Pages；留言、獎號與房間伺服器預備放在 Cloudflare 免費方案。部署步驟寫在專案的 <code>README.md</code> 與 <code>workers/README.md</code>。</p>
+    </article>
+  </main>
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html">
+      <img src="assets/img/mark.svg" width="22" height="22" alt="">
+      <span data-studio-name>TONG GAMES</span>
+    </a>
+    <nav class="footer-links" aria-label="網站資訊">
+      <a href="index.html#games">遊戲</a>
+      <a href="feedback.html">留言</a>
+      <a href="about.html">關於</a>
+    </nav>
+    <p class="footer-copy">© <span data-studio-year>2026</span> <span data-studio-name>TONG GAMES</span></p>
+    <p class="footer-note">打開分頁就能玩。有想法可以到「留言」告訴作者。</p>
+  </footer>
+
+  <script src="assets/js/games.js"></script>
+  <script src="assets/js/site.js"></script>
+
+</body>
+</html>
