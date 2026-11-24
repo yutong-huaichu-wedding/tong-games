@@ -15,4 +15,4 @@ migrations_dir = "migrations"
 
 # 填 GitHub Pages 的 origin。例：https://<github-user>.github.io
 [vars]
-ALLOWED_ORIGINS = "http://127.0.0.1:8765,http://localhost:8765"
+ALLOWED_ORIGINS = "http://127.0.0.1:8765,http://localhost:8765,https://yutong-huaichu-wedding.github.io"

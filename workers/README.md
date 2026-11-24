@@ -19,7 +19,7 @@
 | 灣彩小鎮獎號 API | https://wan-tsai-time-travel.yutong-huaizhu-1212.workers.dev |
 | 聚一桌 | https://table-club.yutong-huaizhu-1212.workers.dev |
 
-D1：`tong-games-feedback`、`table-club-db`。`wrangler.toml` 已寫入 `database_id` 與本機 CORS。GitHub Pages 上線後請把 Pages 的 origin 加進 CORS / ALLOWED_ORIGINS 再部署。
+D1：`tong-games-feedback`、`table-club-db`。`wrangler.toml` 已寫入 `database_id`，CORS / ALLOWED_ORIGINS 含本機與 `https://yutong-huaichu-wedding.github.io`。
 
 ## 本機測試（不必登入 Cloudflare）
 

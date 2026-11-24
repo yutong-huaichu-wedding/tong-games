@@ -66,7 +66,7 @@ git push -u origin main
 | 灣彩小鎮獎號 API | https://wan-tsai-time-travel.yutong-huaizhu-1212.workers.dev |
 | 聚一桌房間伺服器 | https://table-club.yutong-huaizhu-1212.workers.dev |
 
-這些網址已寫進 `assets/js/games.js`（`apiBase`、`wanTsaiApiBase`、`tableClubApiBase`）。CORS 目前允許本機預覽來源 `http://127.0.0.1:8765` 與 `http://localhost:8765`。GitHub Pages 上線後，把 `https://<你的帳號>.github.io` 加進三個 `wrangler.toml` 的 `CORS_ORIGINS` / `ALLOWED_ORIGINS` 再部署一次，否則瀏覽器會擋跨網域請求。
+這些網址已寫進 `assets/js/games.js`（`apiBase`、`wanTsaiApiBase`、`tableClubApiBase`）。CORS 已允許本機預覽（`http://127.0.0.1:8765`、`http://localhost:8765`）以及 GitHub Pages 的 origin：`https://yutong-huaichu-wedding.github.io`。
 
 - 留言：`workers/feedback`（Worker + D1 `tong-games-feedback`）。管理密鑰已設成 Worker secret，並只存在本機 `/workspace/portfolio/.secrets/admin-token`（權限 600、已列入 `.gitignore`）。請自行備份到密碼管理器，**不要寫進程式、不要貼到聊天或網站檔案**。管理頁是 `/admin.html`（沒有放在公開選單）。
 - 灣彩小鎮：`workers/wan-tsai`。會向台灣彩券官方 API 查真實歷史獎號。

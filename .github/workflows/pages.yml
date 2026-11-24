@@ -14,20 +14,16 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - name: Assemble static site
         run: |
           mkdir -p _site
-          # 不把 Worker 原始碼、git、壓縮包放進公開網站目錄
           rsync -a --delete \
             --exclude '.git/' \
             --exclude '.github/' \
@@ -36,6 +32,7 @@ jobs:
             --exclude 'node_modules/' \
             --exclude '.wrangler/' \
             --exclude '.dev.vars' \
+            --exclude '.secrets/' \
             --exclude '*.zip' \
             --exclude '.gitignore' \
             ./ _site/
@@ -44,5 +41,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
